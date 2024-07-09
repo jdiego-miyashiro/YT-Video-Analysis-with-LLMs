@@ -56,7 +56,7 @@ def format_youtube_transcript(transcript_documents, output_file='youtube_script.
     # Return the full script content in memory
     return memory_content
 
-def get_youtube_transcript(yt_uri, chunk_size_seconds=45):
+def get_youtube_transcript(yt_uri, chunk_size_seconds=60):
     # Load YouTube transcript using the provided URI
     loader = YoutubeLoader.from_youtube_url(
         yt_uri,
@@ -73,7 +73,7 @@ def get_youtube_transcript(yt_uri, chunk_size_seconds=45):
     return formatted_transcript
 
 def get_transcript_summary(transcript,initial_prompt,refine_prompt):
-    llm = ChatOpenAI(temperature=0,max_tokens=3096)
+    llm = ChatOpenAI(temperature=0.2,max_tokens=3096)
         
     text_splitter = RecursiveCharacterTextSplitter(
         # Set a really small chunk size, just to show.

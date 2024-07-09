@@ -16,7 +16,7 @@ The idea is that a reader with a technical backgroud can easily read our composi
 We are working by parts because the transcript it's a very big.
 We have made a partial document up to a certain point of the transcript: {existing_answer}
 
-Your job is to merge and destile these partial  together into a consice, comprehensive but succint, easy to read document that explains what new insights are being showcase
+Your job is to merge and destile these partial  together into a consice, comprehensive but succint, easy to read document that explains what new insights are being provided by the the video
 
 Requirements for the document:
 Focus on what new knowledege is the video presenting. Explain what new or intersting, technologies,tool,algorithm,discovery, are being discussed and how do they work and why are they relevant
@@ -26,10 +26,10 @@ The document should have the following format:
         introduction,
         body
             paragraph for each key topic/tool/algorithm/etc.
-            paragraph 1  [timestamp that supports the paragraph 1]
-            paragraph 2  [timestamp that supports the paragraph 2]
+            paragraph 1 title:  [timestamp that supports the paragraph 1]
+            paragraph 2 title: [timestamp that supports the paragraph 2]
             ....
-            paragraph X  [timestamp that supports the paragraph X]
+            paragraph X title: [timestamp that supports the paragraph X]
         conclusion
 The body paragraphs should  reference the timestamps of the transcript that support what they are saying as if they were citations
 Do not use bulletpoints use subtitles
