@@ -12,10 +12,11 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import PromptTemplate
 from io import StringIO
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
+from prompts import initial_chunk_prompt_template as initial_prompt
+from prompts import refine_chunk_template as refine_prompt
 
 # Load environment variables from .env file
-load_dotenv()
 
 def format_youtube_transcript(transcript_documents, output_file='youtube_script.txt'):
     # Create a StringIO object to hold the content in memory
@@ -55,12 +56,14 @@ def format_youtube_transcript(transcript_documents, output_file='youtube_script.
     # Return the full script content in memory
     return memory_content
 
-def get_youtube_summary(yt_uri, chunk_size_seconds=45):
+def get_youtube_transcript(yt_uri, chunk_size_seconds=45):
     # Load YouTube transcript using the provided URI
     loader = YoutubeLoader.from_youtube_url(
         yt_uri,
         chunk_size_seconds=chunk_size_seconds,
-        transcript_format=TranscriptFormat.CHUNKS
+        transcript_format=TranscriptFormat.CHUNKS,
+        add_video_info=True,
+        
     )
     
     transcript_documents = loader.load()
@@ -69,6 +72,36 @@ def get_youtube_summary(yt_uri, chunk_size_seconds=45):
 
     return formatted_transcript
 
+def get_transcript_summary(transcript,initial_prompt,refine_prompt):
+    llm = ChatOpenAI(temperature=0,max_tokens=3096)
+        
+    text_splitter = RecursiveCharacterTextSplitter(
+        # Set a really small chunk size, just to show.
+        chunk_size=3000,
+        chunk_overlap=500,
+        length_function=len,
+        is_separator_regex=False,
+    )
+    
+    chunks = text_splitter.split_text(transcript)
+    documents = text_splitter.create_documents(chunks)
+    intial_prompt = PromptTemplate.from_template(initial_prompt)
+    refine_chunk_prompt = PromptTemplate.from_template(refine_prompt)
+    
+    chain = load_summarize_chain(
+    llm=llm,
+    chain_type="refine",
+    question_prompt=intial_prompt,
+    refine_prompt=refine_chunk_prompt,
+    return_intermediate_steps=False,
+    input_key="input_documents",
+    output_key="output_text")
+
+    result = chain.invoke({"input_documents": documents}, return_only_outputs=False)
+    return result['output_text']
+
+
+    
 def main():
     st.set_page_config(page_title="YouTube Video Analyzer", page_icon=":movie_camera:")
 
@@ -77,6 +110,14 @@ def main():
     user_question = st.text_input("Ask a question about your video:")
 
     summary = ''
+    
+    load_dotenv(override=True)
+
+    #print("Loaded OpenAI API Key:", openai_api_key)
+    #print(os.environ)
+
+    # maybe instantiate your llm here 
+    
     with st.sidebar:
         st.header("Video Processing")
         
@@ -86,7 +127,12 @@ def main():
             with st.spinner("Processing video..."):
                 # Call function to get the YouTube summary
                 if yt_uri:
-                    summary = get_youtube_summary(yt_uri)
+                    transcript = get_youtube_transcript(yt_uri)
+                    
+                    summary = get_transcript_summary(transcript,initial_prompt,refine_prompt)
+                    
+                    
+                    
     st.write(summary)
 
 if __name__ == '__main__':
