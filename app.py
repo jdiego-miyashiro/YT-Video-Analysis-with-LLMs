@@ -108,7 +108,6 @@ def main():
 
     st.subheader("Analyze and Chat About Your YouTube Videos")
 
-    user_question = st.text_input("Ask a question about your video:")
 
     summary = ''
     
@@ -132,9 +131,31 @@ def main():
                     
                     summary = get_transcript_summary(transcript,initial_prompt,refine_prompt)
                     
-                    
-                    
+        
     st.write(summary)
-
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])  
+   
+    # Accept user input
+    if prompt := st.chat_input("Ask a question about your video:"):
+        # Display user message in chat message container 
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        # Add user message to chat history, note the role is user
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        
+        # Generate response
+        response = f"Echo: {prompt}"
+        with st.chat_message("assistant"):
+            st.markdown(response)
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
+                    
 if __name__ == '__main__':
     main()
