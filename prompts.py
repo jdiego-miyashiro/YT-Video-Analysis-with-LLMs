@@ -31,6 +31,7 @@ The document should have the following format:
             ....
             paragraph X title: [timestamp that supports the paragraph X]
         conclusion
+        Timeline of Topics Discussed with timestamps
 The body paragraphs should  reference the timestamps of the transcript that support what they are saying as if they were citations
 Do not use bulletpoints use subtitles
 The reader might then go to the timestamps to check so include a chronological list or timeline summarizing the sequence of topics discussed in the video

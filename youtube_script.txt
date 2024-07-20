@@ -1,120 +1,655 @@
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:00:00---->00:01:00]:
-yeah right okay I think we're ready to go well good morning everyone good morning you crazy cats I'm delighted to see so many of you here this morning um and want to learn a little bit more about the perfect couple so um we're a couple of months away from Valentine's but I just want to show you I'll illustrate to you a little bit how uh language models are in love with uh knowledge graphs and Indeed vice versa so so like the context here is to illustrate how by combining a large language model with the knowledge graph you basically have a have a beautiful uh marriage made in heaven as it were um before I kick it off quick word from our sponsors my name is Kristoff nce I'm part of the field engineering team at ne forj ne forj was established um effectively commercialized in 2010 we commercialized the graph database uh but in the meantime our software is has expanded quite substantially we now offer graph data analytics and visualization tools as well um and so
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:00:00---->00:00:45]:
+(upbeat music) - Thank you so much Alex for
+this nice introduction. So, You stole the content
+of my first few slides, but so hello, Nodes 22. I'm so happy to be here today. Great to see all those
+people interested in graphs as always. And in my session as Alex said, I would like to show you some
+cool graph visualization tools for many of the great use
+cases for a graph database visualization is super valuable tool that you should be aware of and it doesn't have to be complicated as you will see. Specifically I'll talk about
+visually exploring your name, Neo4j Graphs with Jupyter Notebooks
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:01:00---->00:02:00]:
-that allows you basically to uh have an entire um uh graph technology ology platform for your connected data so um we've been re used uh by most of the large Enterprises in the world um and I think equally important for you guys here today is that everything I will illustrate and talk about today is open source right so everything you can use uh pretty much straight out of the box if you come and if you register and I'll explain that later on um we have about 250,000 registered developers that have um composed quite a lot of uh projects Etc we have about 5,000 questions answers on stack overflow so you're never going to get stuck and a ton of material to basically get going our software can be used so like anywhere that is on your own laptop and any of the big cloud providers Etc so um the topics we're going to cover here today quite a little quite a bit we're going to kick it off with um knowledge graphs and so I'm going to recap on the definition of a Knowledge Graph then I'm also going to illustrate how the key aspects of a Knowledge Graph integrate with the large language model and then
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:00:45---->00:01:30]:
+and simple literate programming. Whether you are a software
+developer or a data scientist or a database administrator
+or a project manager, my talk should give you some ideas on when you would want to
+be using graph visualization to better understand the
+data in your Neo4j databases. After my talk, I bet some of you go and
+try this on their own data. It's safe and it's easy and it's free and it's always exciting
+to get to actually see your graph data in a meaningful
+way for the first time. So some more details about myself. So, together with my team at yWorks, I've been working in the field of graph and diagram visualization for more than what's soon
+going to be 25 years.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:02:00---->00:03:00]:
-we'll stress upon how you can use how you can can basically find implicit relationships in that Knowledge Graph in that factual information that you have and that's so like we'll come back a couple of times uh and then we'll go into the med and the potatoes of of the talk so we'll show how ultimately the integration of large language models with knowledge graphs can work as a front end uh user interface as it were and then also how we can do the heavy lifting uh in the back end so we'll explain that and as I said our software is entirely open source so towards the end if I time allows I will try and explain to you how you can get started on on your graph Journey um right so I would like to kick it off so like with the key theme of of the talk as it were um which I basically a quote I took over from from uh from Danny randich who who was part of the he's now part of wik dat and he started the knowledge graph project at at Google which kicked off the entire thing effectively and he's saying like in a world of infinite content knowledge becomes valuable and that's that's really the key thing right
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:01:30---->00:02:15]:
+And our tagline is, "The
+diagramming experts," and we help teams and
+enterprises worldwide with their graph visualization tasks. As graph drawing specialists, we have seen a huge number of use cases and data sets over the years. We've been working on and
+providing high quality tools and support to our customers and the community around that topic. And the tool we'll be looking at today is just one of these tools. So here's the agenda,
+what will you learn today and what are we going
+to see in the session? We'll be looking at easy ways to work with Neo4j databases plus the Neo4j
+graph data science library in the context of Jupyter Notebooks. But don't worry, although
+this will also mean we'll be looking at some lines of code, this is not going to be really difficult.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:03:00---->00:04:00]:
-we already prior to chat GPT and the likes we already had substantial amount of content but now of course we have infinite content right that thing that that turns around 247 and so the question is how can we basically retain and ensure knowledge right so that is that is a key aspect here that we'll we'll try and stress um and then also so like my mission of effectively today is to make you effectively as excited as I am about these knowledge graphs and as I said try and show you how you can get started on your graph Journey later on we have a booth here uh 328 not in the middle of next to Microsoft effectively so if you have any questions please please please come and see us um and I've got a ton of material here that I will can share as well and and show you as well okay so first things first we're going to define a knowledge graph in its most basic concept and then see and then link it in with how that works with with a large language model so we're going to use sort like the most broadest academic definition that you can find effectively where we basically defining entities as um as objects so these could we we're
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:02:15---->00:03:00]:
+We look at automating visualization tasks with the help of literate
+programming in notebooks. I'm going to show you how to
+create custom visualizations that will help us and our users
+better understand the data hidden in our graph databases. So for this I'll show you
+how to set up Jupyter, Jupyter Notebooks to connect to Neo4j. Use Cypher Query the database contents and the graph data science library to optionally perform some analysis tasks. We'll see how to create
+graph visualizations in Jupyter Notebooks and labs. They won't just look beautiful, but we will also make sure
+to include the information in the visualization that we
+want to provide our users with. So here's a quick overview of how all the things are connected that I'll be using today.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:04:00---->00:05:00]:
-going to build up a toy graph in a minute but these could be like people they could also be abstract Concepts then we have the explicit relationships between those entities and again we'll showcase that and then the key aspect ultimately around the knowledge graph and why and how they're so important around large language models is this concept of semantics okay and there's basically two key areas that we want to do here we want to use those large language models to ultimately create semantics that is to say create machine readable semantics uh for my knowledge graph and then another thing which I want to do is ultimately learn from my network structure of factual information I'm going to keep on repeating that one so learn from that Network structure through this amazing thing called graph machine learning graph data science Etc that allows me and there's a relatively recent development in in the AI machine learning space that allows me to learn from the connections that I have between my data points right and so we of course are very uh biased around it and you may think this guy from near for J looks all
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:02:15---->00:03:00]:
+We look at automating visualization tasks with the help of literate
+programming in notebooks. I'm going to show you how to
+create custom visualizations that will help us and our users
+better understand the data hidden in our graph databases. So for this I'll show you
+how to set up Jupyter, Jupyter Notebooks to connect to Neo4j. Use Cypher Query the database contents and the graph data science library to optionally perform some analysis tasks. We'll see how to create
+graph visualizations in Jupyter Notebooks and labs. They won't just look beautiful, but we will also make sure
+to include the information in the visualization that we
+want to provide our users with. So here's a quick overview of how all the things are connected that I'll be using today.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:05:00---->00:06:00]:
-right but clearly the dude has been eating mushrooms but if you look at Google Deep Mind for instance right these guys are betting the farm effectively in terms of the technologies that they're using and if you're following a little bit what they've done with the protein folding Alpha fold Etc if you look down in what part of that architecture was a graph newal Network right so it's a very powerful structure and what you or powerful methods rather and what you want to do you want to deploy that on your knowledge graph to learn from that Network structure as it were so and that's going to come back later on where we're going to talk about how to integrate it with the language models and this called grounding okay so now we've defined so like the key definitions as it were the key Concepts let's have a look how we can build that one up and perhaps you can also have think about how this could potentially apply to your particular project that could be something in your Enterprise that could be fixtures in your tennis club as well right so in its core concept we start off with notes and in this simple example uh we have two person notes and a car note and what we're going to do we're going to Define some properties on these noes and this
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:03:00---->00:03:45]:
+Pun intended, the focus is
+on yFiles graphs for Jupyter, which is at the top and the
+left half basically explains how all this works and adds some context. So yWorks, the company I work at, creates a software development
+kit called "yFiles." It allows software developers to build sophisticated graph
+visualization applications with great automatic layouts
+and rich custom interactions. And the Jupyter widget
+we'll be looking at today is also built on top of that library. And by the way, those tools at the center, they are all free to use so
+they don't require registration and the lower two don't
+even require installation nor download. You can just use
+them for free on our website. I will only briefly speak about the data explorer apps in this session.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:06:00---->00:07:00]:
-is also part of this semantics that we want to expand upon so let me explain so we have um basically in this case we have Dan we have um um um and so we got that date of birth we can expand on these Key properties and then what we have as well and this is where the large language models already come into play we have this thing called evolvo we are Swedish company as I said um but what we can add now we can add vectors to each node so we can have a vector store in this graph right what we have done here we have description and you see a vector the description of course initially was a blue car with yellow tires and red red seats or something along those lines right so I have a pi I have a string a chunk of text and now with these language models no surprise to you I can very efficiently very quickly convert that into a word embedding and then add that as a vector to my to my graph very powerful and I'll explain that later on but keep this concept in mind because I will we'll come back to it in a minute so now that we've got the notes we're going to Define obviously the relationships between those those
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:03:45---->00:04:30]:
+These belong to another set of tools to interactively explore connected data and one of them can be
+launched directly from within the Jupyter widget as we'll see, but they can also be used standalone without the Jupyter context. Actually at last year's Nodes conference, I dedicated a whole session
+to the data explorer for Neo4j and even more
+so the app generator. So I won't be covering it this time so, but feel free to browse the archives and watch the recording
+after the conference. All of these tools have built in support for Neo4j databases. So all you need to get started is a set of credentials
+to access your database. Read only access is
+enough for many use cases and the data never leaves your systems or touches our service. So there's a direct connection
+between your machine
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:07:00---->00:08:00]:
-explicit relationship he's in love with her fantastic she loves him back happy days they're living together um he's driving the car she of course paid for the whole thing and then one other thing that we can do we can add some more properties to those relationships which again talking about graph data science graph machine learning very powerful because I've got a descriptive um property here that he's been driving the car since January but I could also say a weighted relationship that he drives the car 5 days out of seven so for those of you familiar with graph Theory once I have a weighted graph I'm off to the races because a lot of things that I can do in terms of flow analysis Etc so happy days now we've defined a knowledge graph in its most basic form a most toy example as it were and now the fun really starts because one of the key aspects that you can do with a knowledge graph which you can't really do with any sort of like data structure as it were is that you can let it grow you can detect implicit relationships in your factual knowledge and so I'm going to contrast that later on with the with the language model so if we quick if we have a quick look at this toy example here we
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:04:30---->00:05:15]:
+and your database and you
+can run the tools offline behind the firewall if you wish to. So don't be afraid and just try it. Okay, so let's take a look at
+the Jupyter Notebook plugin. And by the way, the plugin's
+issue tracker is on GitHub. So when you use it and feel
+like it's missing a feature, please do file an issue on GitHub and the plug-in is
+under active development and the more people find it useful, the more time we can actually
+invest into the tool. So this is what the plug-in does. It provides interactive
+graph visualization and exploration capabilities
+in the form of a widget that can be embedded in Jupyter Notebook and Jupyter lab notebook cells. So you can use it to
+visualize connected graph data while from many different
+kinds of different data sources
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:08:00---->00:09:00]:
-have a bunch of users um and they are visiting the web you know they're serving the web Etc well for me if people are using the same IP location so that is the same the same laptop the same phone yeah they're probably the same right so I can then immediately persist make that relationship explicit I can create a edge a relationship between those two users through the database and I can persist that that allows me then ultimately to to effectively extract subgraphs and do further analysis on this one and so in the context of large language models I can find implicit relationships between my factual knowledge there's no stochasticity involved here in this case right I know that they both are using an IP location this is what we're doing with entity resolution for instance so I can do a lot of these kind of things already through the query language and then on top of that and that's the whole machine learning graph machine learning graph data science aspect now there are very sophisticated methods now to find nonobvious implicit relationships in my data and then of course I can leverage
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:04:30---->00:05:15]:
+and your database and you
+can run the tools offline behind the firewall if you wish to. So don't be afraid and just try it. Okay, so let's take a look at
+the Jupyter Notebook plugin. And by the way, the plugin's
+issue tracker is on GitHub. So when you use it and feel
+like it's missing a feature, please do file an issue on GitHub and the plug-in is
+under active development and the more people find it useful, the more time we can actually
+invest into the tool. So this is what the plug-in does. It provides interactive
+graph visualization and exploration capabilities
+in the form of a widget that can be embedded in Jupyter Notebook and Jupyter lab notebook cells. So you can use it to
+visualize connected graph data while from many different
+kinds of different data sources
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:09:00---->00:10:00]:
-this thing called the N graph data datase a native graph database like n4j to immediately persist that that implicit relationship and then we'll see that later on how we're going to feed that into the large language model so that's we basically why we're saying graphs grow organically you can gain ever better insights in your graph in your date which is not at your disposal if you leave it in a in a tbla format as it were great so now we've done that um if you want to know a little bit more in fact if you have like uh basically if you want to study these kind of things we just published or updated rather a book uh by my colleague Jesus and our chief scientist Jim Weber if you're interested in it come and see us at boot 328 and we'll show you how to get your free copy it's really a reference work now so um for those who want a little bit more comment see us right okay now as I said uh in the context of of of happy uh Happy Days and love how is sort of like a Knowledge Graph how can you integrate it with a language model and so conceptually there's sort like two major workflows you can think about these kind of things you can either see
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:05:15---->00:06:00]:
+that you have access
+to from your notebooks. And of course this in
+this includes Neo4j graphs which are supported right out the the box. This enables you to
+visualize the graph results of cypher queries. So the main difference
+to the Neo4j browser where you can do similar
+things is the target audience and thus also the support for
+more sophisticated use cases. While the Neo4j browser is essential for database
+administrator tasks, it's not so much a great
+scripting environment for one, it's basically limited to
+running cypher queries, but in a Jupyter notebook you can do that but you can do so much more. As a data scientist, you can write complex
+interactive notebooks that dynamically query
+data from various sources,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:10:00---->00:11:00]:
-it on as sort like using it or deploying it as a user interface so as a front end I we'll see that in a minute what you can do with that or you can basically let it do the heavy lifting okay and so I'll explain to you the three major methods around that and there like but based on three pillars and I see a lot of you guys taking photos that's great thank you but you can also get the slides just come and see us and we'll send you the slides so we're we're totally open source um okay so as a front end um new forj has basically an interface called Neo Dash that is a dashboard that connects to you then your database again here open source you can deploy it at your own on your own projects um and so what we have now built into that dashboard is the ability for to convert natural language free text into Cipher Cipher is the query language of NE forj but also will become the standard uh when we move to a graph a graph query language in 24 um and so that allows you to as I said to use that ability that these large language models
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:06:00---->00:06:45]:
+do sophisticated pre-processing and then combine this with
+any number of cypher queries to create a far more complex and hopefully helpful visual realization. Also with widget you can apply various automatic
+graph layouts to the graphs in order to highlight the
+different aspects of the structure and the connectivity in your data. And with advanced custom
+rules for the visualization, you can add style to your nodes and relationships in the diagram and make it easier for the user to quickly see the important data. So we'll get to this in a minute. Installing the widget, it is easy. For example, you can
+just use "pip install." So if you have used
+Jupyter notebooks before, that should be all familiar to you.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:11:00---->00:12:00]:
-now have to write code this is very powerful right because now suddenly all of this technology becomes is becomes available to anyone in your organization or anyone that basically um wants to deploy ultimately a Knowledge Graph so hopefully this time works yeah so basically you now can see a little uh example of this one this would be your your dashboard so Neo Dash and what you have here now we will have a frame where you can add free text so show me a movie this one is linked to a movie database in the background it then will go into the open AI um engine convert it into a query which will see Now That Was Then basically converted that piece of natural language into a query gets run onto the database onto the movie database Returns the result and then you get results in this particular example it retains the context and information so you can basically continue to ask ask the questions around Etc so this is very powerful in addition we are also uh working now on basically fine-tuning a base model on a whole body of um of Cipher code and and that will then make
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:06:45---->00:07:30]:
+Here in this example I'm
+also installing the Neo4j and graph data science
+packages for later use too. Note that you might need to restart the Jupyter server after this and please be aware that the
+functionality at this time, unfortunately for compatibility reasons, you should please open them
+using a regular Jupyter Notebook or Jupyter lab server. It doesn't work in all third party viewers like Visual Studio Code yet. So now let's take a look
+at the working widget. This over to the live demo. So I have a plain
+Jupyter Labs installation plus only the packages
+from that last slide. So the graph data science one isn't actually required
+to connect to Neo4j,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:12:00---->00:13:00]:
-it even more powerful but already now certainly with the GPT 4 engine uh we can we can do a lot so that's very powerful we'll see in a minute also how we're going to deploy that in dis tinal grounding okay now in terms of so like doing the heavy lifting um basically as you know uh these large language models um they've been developed um already since the Transformer area right so sorry the language model has been developed since the Transformer area we've done quite a lot of work um at new forj in using these Transformer models such as bio Etc to integrate with neop forj who we've got a lot a lot of expertise um and then of course since the explosion from November December with the um with the chat GPT lots of workflows were done lots of groups were established and so we managed to sort like find our little bit what works and what doesn't work and it was very encouraging to see that the paper was published in June um basically doing um or summarizing validating the approach that we did and so these guys have
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:06:45---->00:07:30]:
+Here in this example I'm
+also installing the Neo4j and graph data science
+packages for later use too. Note that you might need to restart the Jupyter server after this and please be aware that the
+functionality at this time, unfortunately for compatibility reasons, you should please open them
+using a regular Jupyter Notebook or Jupyter lab server. It doesn't work in all third party viewers like Visual Studio Code yet. So now let's take a look
+at the working widget. This over to the live demo. So I have a plain
+Jupyter Labs installation plus only the packages
+from that last slide. So the graph data science one isn't actually required
+to connect to Neo4j,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:13:00---->00:14:00]:
-reviewed close to 5050 lit studies combining large language models with knowledge graphs and they've come up with basically a framework which I think is a very good way of looking at how you can use these language models so like to do the heavy lifting or rather the combination of both to do the heavy lifting so we are going to focus on the first two and let me quickly explain what they do so you can either have basically have a Knowledge Graph to enhance to augment your language model and we'll double click on that one a minute you can also have basically language models that augment your knowledge graph to do a lot of the work for you and again here we'll go into end we we'll explain that and then basically the Pape argues how you can have a Synergy and a continuous uh working between those two pillars as it were so that's basically what what we're going to focus on so first things first or first uh pillar knowledge graphs that enhance large language models what do we need to think about that so um as you know these language models they were trained on a large body of uh of of of
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:07:30---->00:08:15]:
+but of course having the
+graph data science library available in a Jupyter notebook really allows for some
+very cool use cases. For the upcoming examples, I'm using the airports example database that comes with one of the
+graph data science tutorials. So I have set up a Neo4j (indistinct) with graph data science library enabled and I uploaded the sample
+database data before. So this means I can now run cypher queries right in my Jupyter Notebook
+using the Python API. So here I am importing
+the graph database object from the Neo4j package in
+my Jupyter Notebook cell. Instantiating a driver and the session with a certain database. Then I run the cypher query over here. So far nothing special.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:14:00---->00:15:00]:
-of of of work effectively so I think the last the the Falcon model the largest falcon model was trained on uh 7even no 3.1 trillion of tokens um consuming something like 7 million GPU hours something like 4,000 gpus and and it's just they're just giving it away which is quite remarkable actually so consequently if you train it on a lot of stuff um certainly on Games of Thrones if you ask it something in Games of Thrones guess what is memorize it and we'll come will come with an answer and as you may have heard of this at the end of the day these language models they are manipulating strings right they're manipulating ultimately tokens there's no reason Etc so there's a bit of a problem there and you you can see where I'm going here um and so they're certainly not perfect but this at times at times they do push it they do push it and so I just want to like already warn you what's coming now maybe a little bit upsetting of some of you are there any just raise of hands any Germans or German football fans here no maybe they're a little bit shy anyway it's
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:08:15---->00:09:00]:
+And this is all just the regular Neo4j API available in the Python
+Jupyter Notebook version. What I'm doing here is the
+result of the cypher query. I'm calling the dot graph
+function to get the graph as an in-memory data structure. If I execute the cell, I get to see this as the graph which is well not really helpful because there is no built in support for visualizing graphs at the Neo4j level inside Jupyter notebooks. So this is where our
+plugin comes in head handy. So what I'm doing is I'm just importing this
+graph widget object from the yFiles Jupyter graphs package
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:15:00---->00:16:00]:
-going to be a little bit stressing I'm sure there's lots of football uh English football fans so where were you on that you know faithful day effectively right so if you now look at back at at what happened and if you then ask if you then ask Chad GPT and that's why I'm saying there's no need for this if you reverse the question when did Germany beat England it sounds very credible it sounds very credible and it even says it there was a Munich Massacre right this will not happen in a graph because you have the direction of whom be who and of course the correct answer is that England be Germany and there was a Munich Miracle right so you have this thing which you may be familiar with well you all know is hallucination right and so that's a key drawback key problem with these large language models is that there is a lot of hallucination you can't really trust them and we'll see that in a minute as well and it's even a little bit more worrying that we did this in the same conversation and it still didn't grasp what it should be doing and what it should be answering so there's a bit of a problem here and so the key aspects here the key drawbacks
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:09:00---->00:09:45]:
+and calling the constructor
+to create a widget. And I'm passing in the graph instance from the cell here above. So this is a Neo4j graph and Neo4j graphs, just along with some other graph forwards, are supported out of the box. So I don't need to do anything special to visualize my Neo4j. All I do is execute this cell and this actually launches the widget. So this is the widget and it consists of two paints where there's the central
+graph visualization and if the graph is larger, I can actually use this overview here over here to navigate my larger graph. But in this case it's small enough so I can just like collapse it. And then there's this sidebar
+with additional information. I can also expand my screen,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:16:00---->00:17:00]:
-as it were of basically these large language models is of course um garbage in garbage out but the problem is you don't even control the garbage in right you don't even know roughly what's going in it is some random stuff that's been trained on there is a cut off date as you know and then one of the key aspects here is that it sounds very credible we can't really verify this right so you have no certainty this thing who knows what it comes up with right and so this Paul chat was was a victim of that there was a lawyer that submitted some motions to court and he basically had the chat GPT come up with the arguments that he was presenting to the to the judge Etc and he had to pay a fine and and yeah anyway it was disgraced so basically the key drawbacks of these large language models they hallucinate and as you may have heard of this little comparison as well they make up random sentences from random people um they sound very credible like parrots do as well but what is the mean main difference here one is a cute little bird and the other one is is not right so now so that brings us to the the key aspect how can
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:09:45---->00:10:30]:
+so in case my visualization
+is really large, so to see more and then
+I can navigate the graph by dragging it around or using the mouse or the buttons to zoom in and zoom out. Hovering over the items shows me the properties that are
+attached to the in-memory graph. And these are the
+properties that are actually from the Neo4j database.
+So if you look at these, these are exactly the ones
+that you get from the database and the label is the Neo4j. The item named label
+here is the Neo4j label. So this is a city and
+airport countries and so on. The same goes for the relationships. And clicking on them, I can use the site panel
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:17:00---->00:18:00]:
-we solve this problem how can we use graphs to ultimately solve this problem and that is basically what there's so like three major ways of looking at solving this problem there is of course fine-tuning and here as well we can use knowledge graphs couple of things with fine-tuning you need a uh very well curated supervi labeled data set to do some supervised training so the literature says that you give or take need at least a th000 PA so these could be Q&A pairs this could be example result pairs Etc and then of course you need the manow and the brain power to do the you will Network extra training right so you can even feed a Knowledge Graph into that uh the team of Lovich at Stanford has done that and of course they they can do that you know but you need a lot of resources you need a lot of expertise to do that but it certainly Works equally said you do every time you want to add it with new information you need to retrain the whole banana again right so that's one way then you have the fuse shot learning that is a very powerful tool right so this is basically the prompting that you use to optimizing the prompting and then do this in
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:09:45---->00:10:30]:
+so in case my visualization
+is really large, so to see more and then
+I can navigate the graph by dragging it around or using the mouse or the buttons to zoom in and zoom out. Hovering over the items shows me the properties that are
+attached to the in-memory graph. And these are the
+properties that are actually from the Neo4j database.
+So if you look at these, these are exactly the ones
+that you get from the database and the label is the Neo4j. The item named label
+here is the Neo4j label. So this is a city and
+airport countries and so on. The same goes for the relationships. And clicking on them, I can use the site panel
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:18:00---->00:19:00]:
-context learning Etc there you can deploy the agents Lang chain Etc very powerful to ultimately limit the amount of nonsense that the language model can come up with and so you s like make it more specialized and then what we are going to focus on is this concept of grounding and so there a few talks today that will go into that as well it's very much respected or um see now in in in in in Industry as as so like the gold standard if you want to really reduce that sort of like element of hallucination and so what do we mean with grounding at the end of the day with grounding it comes down to basically forcing the language model large language model to use a specific data set that is created that is based on factual knowledge that you provide okay so it's limiting the amount of uh information limiting the amount and making it extremely specialized that's basically what you do couple of ways of doing that the one that we will be focusing on and certainly within the space of graphs is retrieval augmented generation so we're going to look at retrieval augmented generation uh of graphs and so let me quickly explain how
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:10:30---->00:11:15]:
+to take a look at the
+data in a more static way and for example, to compare items I can with control click and
+I can select multiple elements and see there and compare their values, right inside this panel over here. But it may be difficult
+to identify a certain item and that's what the search panel is for. So I, I know that there should
+be Atlanta somewhere in here. So I just look at this and this lets me focus
+the note inside the graph because right now all I see is that this is in the airport. So I would have to like
+hover over all these elements or click them to see which
+one is the Atlanta port. So we are going to improve
+the situation in a minute
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:19:00---->00:20:00]:
-this diagram works there effectively two ways of looking at it remember when I said that we can use the code writing abilities of the last language models well that's going to come what we do here we are using we are getting a question from our an internal customer external customer or whoever that question is in free text in natural language gets converted into a query that gets released run on my knowledge graph and then ultimately my knowledge graph is the factual information that I've curated that I've added to my graph database and there's a couple of things here that that um is to be stressed so I run this query and I'll come back then ultimately the results of that query as we just saw earlier that could be the results of who which movies did Jackel Nicholson played in or this could be very specific right this could be your knowledge graph on your domain uh area this could be your all of the technical documents uh that this your particular organization may have that you've build out in a Knowledge Graph and then you will return the query results together
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:11:15---->00:12:00]:
+because by default if you show the widget, you will only see get
+to see the note labels and the the relationship types
+right in the visualization and you have to, to look at the data . . . panel to see more of the properties. So that's not yet a great visualization and we'll change that in a minute. But before I do that, I'll show you the last
+tap we have over here, which is a neighborhood view. And this is a contextual view, meaning that whenever I change the context by selecting an element over here, I get to see the immediate
+neighbors of that selected node, as a small utility graph. And in this case all
+neighbors one hop away.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:20:00---->00:21:00]:
-with the question to the language model so that it has the context and has the answer and then we're basically leveraging the language skills of the large language model so it's grammatical and language skills to produce an answer right and I can do this at scale the other thing that I had the benefit that I have remember what I said we want to find implicit relationships we want to learn metadata from our knowledge graph well that is something I can do effectively on a continuous basis I can find these implicit relationships add them to my knowledge graph and then ultimately feed it into ultimately my my cute little parrot and then it will come up with an answer right so the other workflow I can do remember that I said remember beautiful Volvo car it has a vector now right with description well every single note in that Knowledge Graph can have a vector that question I can have I have for my internal or external customer I can convert that into a vector I can do a vector search and then I can basically have all of the nodes that are related to that Vector
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:12:00---->00:12:45]:
+So I can change the number
+of the death over here interactively to get to see the neighbors of the neighbors and the neighbors of the neighbors and the neighbors and so on. And I can use this to
+actually navigate my graph. So rather than having
+to work on this view, I can click on these items and
+they will both synchronize. So whether I'm clicking
+over here or there, this lets me navigate my graph and of course that's also
+the properties view in here. So that's the basic setup that we have for the
+widget and what it does. And it's just one line of code away. And, but as I said, to
+make this more useful, we have an API provided
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:21:00---->00:22:00]:
-returned and not only that I can can then surge the graph on that results so a little bit more involved happy to explain it to you into more detail but basically I can leverage the vector search capabilities with the context of the graph that it provides me so those are the two major workflows around grounding so what are the benefits here um of course I have accuracy right this is factual knowledge that I've created is in my graph database and I can continuously also check on that data there's are various tools of doing this ambiguation Etc so the other benefit is it's a flexible schema if tonight I get more customer information or I get new fixtures in my tennis I can just add it to the knowledge graph and and that is basically my source of Truth so I can almost use it in a real-time context right I can add more information real time as it were as opposed to saying fine tuning where I need to run the whole banana again very powerful then I can be very specific as I said I can feed it with domain specific knowledge this could be technical documents that
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:12:45---->00:13:30]:
+because this is actually an powerful API that provides you with
+methods and functions, and properties to
+customize the visualization to match your requirements. So let's take a look at
+at how that will work. So again, I'm running a cypher
+query here in this example, which just queries a number
+of airports and their cities, how they are related. And later on I will be
+passing the graph here to the widget again, but rather than directly
+showing the widget, which happens when I just write this one, I'm first configuring
+some of the properties. There's properties that have an influence on the general visualization. So like,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:22:00---->00:23:00]:
-I've basically analyzed made a Knowledge Graph out of it um Etc then the other thing is key aspect certainly for the financial services industry and other kind of industry I can explain where that answer comes from right so I have now I can trace back exactly the noes and the relationships that were traversed in my graph to know why it answered it in this way right the key facts are basically being returned there and then I can also restrict the um basically the access to that Knowledge Graph to that information to whoever asks it right so certain h information in my in my uh organization I don't want to share with everyone right and I do this through this thing called role based access control I can restrict which note can be seen by whoever which subgraph can be seen by whoever Etc so those are the like the key benefits of basically using uh this powerful uh data structure of a Knowledge Graph to do grounding for large language models so that's one pillar um then let's have a look at so like how can we now use these large language models to augment
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:12:45---->00:13:30]:
+because this is actually an powerful API that provides you with
+methods and functions, and properties to
+customize the visualization to match your requirements. So let's take a look at
+at how that will work. So again, I'm running a cypher
+query here in this example, which just queries a number
+of airports and their cities, how they are related. And later on I will be
+passing the graph here to the widget again, but rather than directly
+showing the widget, which happens when I just write this one, I'm first configuring
+some of the properties. There's properties that have an influence on the general visualization. So like,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:23:00---->00:24:00]:
-knowledge graphs and there basically we're leveraging two tried and tested techniques in NLP um Bas namely named entity recognition and knowledge compression and this is basically uh encoding and embedding so on terms of named entity recognition for those uh uh vers in in NLP tried and tested method the only drawback you have there is you need specialized libraries you need spacei and whatever you not it's also um need a little bit more expertise in that respect so you need um uh specialized teams and then getting that thing into production is proven to be a little bit um not straightforward all of the time right so that is now the world has changed the ease with which you can basically do named entity recognition using these large language models of course train on this large set of uh body of of work of text and then allowing you the key aspect two key aspects here allowing you to be extremely specific in the prompting to recognize which entities which relationships and then the other aspect
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:13:30---->00:14:15]:
+overall properties that
+affect all the items like directed, which tells which is whether
+my graph that I'm displaying should by default contain arrowheads at the end of the edges.
+So it, for example, in the social networks where
+all my relationships are like nodes and they are person
+one nodes, person two, then it's probably a
+symmetric relationship and I don't want to show them
+as a directed relationship. And I can also switch the graph layout because this is something I
+forgot you to tell about here is that apart from the default organic layout that we see here, which is a forced directed layout,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:24:00---->00:25:00]:
-is the output it generates for you you can basically find say in your prompting I need the results of my entities and relationships that you have extracted out of this text returned in a pandas data frame or a Json file or whatever format so very powerful way to automate the construction of your knowledge graph you can basically we're working with a client on 30 million PDFs that they're sitting on on converting that unstructured data text into a structured format and you can almost do it if you have enough compute power that is overnight so to speak right so that's so this is a very powerful way to sort like make stranded data text um more insightful very powerful and then the other exp example that we have is what we call or what maybe call Knowledge compression it's very simple text embedding and again here tried and test the technique in NLP but now so like the ubiquitous nature of these language models and the ease with which you can basically do an API call and convert any piece of text any string any description
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:14:15---->00:15:00]:
+there's this menu item here which lets me choose
+different automatic layouts and different layouts allow you to highlight different
+aspects of the graph. For example, the
+hierarchic layout shows me that this is actually a (indistinct) graph that I got from the query, which is pretty obvious because the query basically was to match airports and their first degree neighbors. And since the those are all direct edges, we see that there's airports all on the one hand side of
+the graph and the continent, cities and regions on
+the second partition. So choosing an automatic layout may help your users better
+understand the data.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:25:00---->00:26:00]:
-into to a vector and then write that Vector as a property to each note that's very powerful so as a quick example what we did here in this in this um in this example in this blog post this is something you can read is where we basically analyze all of the people that used to work at open Ai and then start at their own company and then what you can then do is basically say okay there's a bunch of articles that are related to whatever name was Danel or something like that soort a bunch of text media articles well I can basically link those articles and I can also summarize that text that article and I write it as a vector because what I can do now I can do a vector search on these articles I can find similarities I can then look up which article related to which note and I can find it further into the graph so I can get context around those articles right and again here nothing nothing new in terms of word embeddings and text embeddings but the scalability that you can do and the
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:15:00---->00:15:45]:
+And to help them choose the right layout. You can do this programmatically too. So here in this example I'm choosing the orthogonal
+layout to be used initially, I am also configuring
+the neighborhood view that I just showed you so that it'll be using three levels and initially we'll be
+using the, in this case, the first node from my graph. And of course I could be using
+more complex logic in here like finding a certain node and showing that node in the neighborhood. I also configure the visualization to not show the sidebar initially. And once the user opens the sidebar, we want to see the
+neighborhood immediately. And also just for the sake
+of showing more features,
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:26:00---->00:27:00]:
-deployment in production is is very powerful and then so what we have done there's a tonging cheek here as I said we've always had the ability or may not said that but we always have the ability to write vectors to each Noe to write vectors in the near forj database we now have released indexing right so basically making Vector semantic search very very powerful and very quick that is to say very quick so we doing basically a sort of like at storage we we at store time we provide an index that makes at query time defining of similarities between vectors through either a cosine or ukan um method uh uh in real time as it were so that allows you then to as I showed you earlier with the grounding to do a search a similarity search a semantic search on those vectors that are properties to your Noe you get returned the nodes which are elements of course entities in your graph and then from that graph I can find the entire neighborhood right I can go one hop two hop 10 hops down in
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:15:45---->00:16:30]:
+I'm disabling the overview
+graph visualization in the top left corner here initially. But now for the good
+parts, the cool parts, the really useful parts is for binding, for changing the visual appearance of the various nodes in here. So as I said before, by default all of the nodes look the same and they have the same,
+they only have their, the aesthetic label in there and we would like to change that. And they also have the same shape, color, and the edges have have the same thickness and you can change all of this
+dynamically and data bound. So the most simple form is to, well just change like the
+color of all the nodes.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:27:00---->00:28:00]:
-millisecond and I can get that wider context returned to me it's not just the top five red sweaters no if I do a top five red sweater search in a graph database with a vector search I get also I can also see which were the trousers that were bought to and if I go 10 hubs up I can see which demographic has been buying these red sweaters Etc so I can get really a very large body of context around that semantic surch so very powerful and then so basically as I said part of the mission of today was to make you as excited about uh knowledge graphs and language models as I am and so how can you get started so um NE forj has always been open source but we have now developed not now but we've over the years developed a lot of tools that allow you to get started in your journey and the quickest way that you can literally do in the next few minutes is to go through this thing called NE forj sandbox it's a cloud-based instance that we pay with hard cold cash uh and then give it to you and then you can basically um um either upload your own
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:15:45---->00:16:30]:
+I'm disabling the overview
+graph visualization in the top left corner here initially. But now for the good
+parts, the cool parts, the really useful parts is for binding, for changing the visual appearance of the various nodes in here. So as I said before, by default all of the nodes look the same and they have the same,
+they only have their, the aesthetic label in there and we would like to change that. And they also have the same shape, color, and the edges have have the same thickness and you can change all of this
+dynamically and data bound. So the most simple form is to, well just change like the
+color of all the nodes.
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:28:00---->00:29:00]:
-data or there's 12 pre-loaded data sets with like Twitter or fraud detection with some of them also a self-paced demo so that allows you to see how this graph Works how these thing works and then in addition on our website there's a ton of material we have a graph Academy we have you can do even do um uh certifications Etc all free of charge you even get a t-shirt Happy Days um so lots of material and then finally um this is a yeah I forgot to mention this basically we've also allowed now for um a very quick open AI or API calls to the likes of open Ai and why have you not but then finally we have a ton of blog posts that our dear esteemed colleague tomash has published around how to integrate with these language model so I can definitely uh encourage you to if you want to see what the usability and applications are of these language knowledge graphs he's done some amazing work in integrating it with basically creating uh chat G uh chat Bots um uh further knowledge graphs and a whole tons of things I mean basically the guy is a machine um so yeah lots of examples everything uh all
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:16:30---->00:17:15]:
+And this what works by
+using a custom mapping. So this is a mapping
+function for each node. It'll return blue. Well that's a pretty similar and actually not quite useful mapping because well, this will change
+the color of all the nodes. But it can get more sophisticated and use the data that
+is bound and available at the various items to drive the visualization. So in the second line, I'm determining what color to
+use for the edges in my graph and we'll be using orange if it's actually in city relationship and all other edges will be black. So this is using
 
-Video Extract : Uniting Large Language Models and Knowledge Graphs for Enhanced Knowledge Representation
-[00:29:00---->End of Video]:
-of the code is available on on the GitHub repository um and so you can get started on that so as I said part of my mission was was to show was to make you guys excited um I thank you very much for attending the talk today we have our booth at 328 myself and my colleagues will be there if you have any questions you want to have a copy of the book or any of the material links to the GitHub repositories Etc just come and find us thank you
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:17:15---->00:18:00]:
+the properties that are
+available in memory. And there's this extra label property which is mapped to the
+Neo4j relationship type, just for convenience. They have both been called
+label here in this case. So we are checking the relationship type, whether it's the city, and then we'll be using orange lines and all black for the other ones. So, but apart from only
+specifying constant values, you can also make really dynamic values. And specifically for the label mapping, if we look at the airport, there is other information that
+we would rather like to see directly in the visualization. For example, I would
+prefer seeing the IATA code
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:18:00---->00:18:45]:
+and the city name for each of the airports directly in the visualization. So what I'm doing here is I'm
+declaring a mapping function for each node from the
+node properties to a label. And what I'm doing is here I'm querying the IATA code and the city property of the node combining this with a new line character. And I'm only applying
+this to the airport nodes because the other node
+don't have these properties. And for all other nodes, I'm
+just using their name property, which in this case is the city and city actually has a name property. So this should be, should result in an nicer label
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:18:45---->00:19:30]:
+and a much more usable graph. Last but not least,
+there's also the option to change the geometry of the elements. For example, if I want to change their size to like indicate the
+importance of those items in my visualization, I can determine, I can
+specify a scale factor on a per item basis. So in this case, for example, if we would be looking
+at the airport nodes, we see that these airports actually have information about the number of runways each airport has in this dataset.
+
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:18:45---->00:19:30]:
+and a much more usable graph. Last but not least,
+there's also the option to change the geometry of the elements. For example, if I want to change their size to like indicate the
+importance of those items in my visualization, I can determine, I can
+specify a scale factor on a per item basis. So in this case, for example, if we would be looking
+at the airport nodes, we see that these airports actually have information about the number of runways each airport has in this dataset.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:19:30---->00:20:15]:
+So what could argue that a
+larger airport has many runways, and I would like to highlight
+these larger airports by increasing the size of these nodes. So this is what I'm doing here. I'm accessing the runways
+property of the nodes. I'm dividing it by four and adding one to get values like 1, 1.25, 1.5, 1.75 and so on. This is just an arbitrary
+function that I came up with, which worked nice for my example. And all other nodes won't be scaled, so they will stay at their original size. So see, let's see how that works out. So this is the new
+graph and as you can see it has a different layout. It uses the orthogonal layout.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:20:15---->00:21:00]:
+The node are blue and the edges are, the in city edges are actually orange. And for the various nodes, you can see that the
+code and the city name is actually rendered
+right on top of the node. And if I open the sidebar, it directly starts with the neighborhood and I just accidentally click the element. But once I reload this, you would see the one
+that I specified in code to be highlighted and shown immediately in the neighborhood view. Okay, so this is is just
+a little bit of coding and you don't want to like repeat this for all of your experiments. So what you can do of course is
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:21:00---->00:21:45]:
+with just little helper
+function that I created here, and I called it "Create Airport Graph." and it does all of the stuff
+that I just showed you, and encapsulated away in a simple function with some simple configurations of it. It's just very simple python and I won't go into the details, but it basically does the
+same that I just showed you, with a few more convenience things. So this means that once
+I execute this cell, I have this function available
+in my Jupyter notebooks. And now displaying a graph from
+my database is really easy. I just need to call one
+function and passing the graph. So again, I'm running a
+cypher query this time
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:21:45---->00:22:30]:
+there's airport cities, region, countries and continents in there. And when I run this function, I get this result and now you can see that it's looking much nicer than before because the nodes have different shapes depending on the type
+we see the right labels, we see different colors and so on. So okay, nice, but still not super
+useful. You might think. However you can start to see that with the hierarchic layout for example, with the the right layout, it's getting much easier to understand the structure of your data.
+
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:21:45---->00:22:30]:
+there's airport cities, region, countries and continents in there. And when I run this function, I get this result and now you can see that it's looking much nicer than before because the nodes have different shapes depending on the type
+we see the right labels, we see different colors and so on. So okay, nice, but still not super
+useful. You might think. However you can start to see that with the hierarchic layout for example, with the the right layout, it's getting much easier to understand the structure of your data.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:22:30---->00:23:15]:
+Now you see that in your
+database there's always this, or at least in the query, there's always these airport
+nodes connecting to cities, connected to countries and to continent. So that's a nice representation of our data that we got here. But now let's add graph
+data science to this and make this really powerful. So because since this is in a notebook, I can actually use third party packages and APIs like matplotlib, or pandas, to add more features to this. So this is a little bit of programming. So what I'm doing here is
+it's not that much code. And what I'm doing here is
+using the graph data science
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:23:15---->00:24:00]:
+module to actually first
+calculate some graph data science, in this case the (indistinct) algorithm to calculate some scores
+for all the airports because I want to, suppose I want to compare
+the various airports in my database and see how they compare with regards to the
+(indistinct) algorithm. So what I do here, and I won't go too much into details, I'm using the graph data science module to project a sub-graph which only consists of the airport nodes and the
+"has route" relationships because that's the network of how the different pairs
+of airports are connected, whether there's a flight
+available between them and the has route
+relationships in our database
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:24:00---->00:24:45]:
+connects all the database of the airports. And with the page rank, I can get a measure of how important or how central a certain airport will be. So calling the GDS library, I get an in-memory result
+that I can work with in my Jupyter Notebook cell. And since this is actually a pandas table, I can use the pandas API to, for example, filter the table and
+only include those nodes that are above a certain score. So I don't get to see the
+super unimportant airports
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:24:45---->00:25:30]:
+according to my measurement for example. So what I'm doing is
+I'm filtering the table and then for display I'm again executing a very simple cypher query. So I'm just loading the nodes that I got from the
+results from the graph data science algorithm. So these, this will just load the nodes with a score larger than
+one point greater than 1.5. So we are loading this
+and displaying this graph. Then I'm again setting
+the labels over here, but also I'm setting a custom scaling which actually uses the
+ranks that we just calculated
+
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:24:45---->00:25:30]:
+according to my measurement for example. So what I'm doing is
+I'm filtering the table and then for display I'm again executing a very simple cypher query. So I'm just loading the nodes that I got from the
+results from the graph data science algorithm. So these, this will just load the nodes with a score larger than
+one point greater than 1.5. So we are loading this
+and displaying this graph. Then I'm again setting
+the labels over here, but also I'm setting a custom scaling which actually uses the
+ranks that we just calculated
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:25:30---->00:26:15]:
+to scale the nodes
+according to their ranks. So, and I can use a custom function here. So any function that suits my use case, I can just code here because
+this is all just python codes, simple python code. So I'm, I'm using a square root function. So not to scale the nodes linearly with respect to their scores because that would lead to super huge nodes in the visualization. So, I thought that using
+square root works well and what I'm also doing is
+I'm using the rank information to color map the nodes. So I'm using third party library, this is from matplotlib
+to get a color map, which basically gives me a nice
+gradient of different colors and I'm using,
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:26:15---->00:27:00]:
+I'm mapping the range of the values that I have in my data
+set, in my results set, to map them to these colors. Last but not least, you may
+have seen that in the data set, the airports actually have
+some interesting properties called "lon" and "lat" which is actually longitude and latitude. So these are geo coordinates. So I am using another mapping
+that I can specify here, which is the node position mapping, which allows me for each node, to specify where on the
+screen I want it to be placed. So why not use the geo
+coordinates for that? So I'm just using this super
+scientific formula over here
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:27:00---->00:27:45]:
+that I came up with multiplying
+the longitude value by 150 and the latitude by minus 200. And if I run this, we get to see this, DNS hiccup, but there's the results. So, if you look at this, you will probably recognize that over here there's actually Europe,
+this is the world map, there's Asia over here, somewhere here should be Australia, south America and the
+US. And if you zoom in, we see that there's
+these airports over here. For example, this is
+Paris Charles du Gaulle, important airport, which we see because it has this light
+green and the larger size according to our measurements.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:27:45---->00:28:30]:
+So that's some nice combination
+of graph data science, visualization and geocoding. But it's not really a graphy example. So as a last example, we are going to use graph data science to do a really graphy tasks and that is calculating a shortest path. So we'll be using the
+shortest path algorithm from the graph data science library to calculate the shortest path between a set of airports. And for this, again, I'm
+creating a projection for the graph data science library, which contains the airports and has route relationships only. And we're including the distance property,
+
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:27:45---->00:28:30]:
+So that's some nice combination
+of graph data science, visualization and geocoding. But it's not really a graphy example. So as a last example, we are going to use graph data science to do a really graphy tasks and that is calculating a shortest path. So we'll be using the
+shortest path algorithm from the graph data science library to calculate the shortest path between a set of airports. And for this, again, I'm
+creating a projection for the graph data science library, which contains the airports and has route relationships only. And we're including the distance property,
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:28:30---->00:29:15]:
+which is available in our data set. So there's someone calculated the distances
+between all those airports, the flight distances, and we used these distances to calculate the shortest path
+between one pair of airports. And I'm using this utility function from the GDS library
+to load these airports. In this case it's Stuttgart and ART calling the shortest path method. And what this results in
+is just a set of nodes, just a set of airport nodes. So because the draft data science library only ran the query the . . .
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:29:15---->00:30:00]:
+the algorithm on the airport nodes and it doesn't have the information about the other nodes
+that we have in there like country location, city,
+country, continent and so on. So what I'm doing next is
+with those results, again, I'm doing another query to actually load a sub-graph
+from the full database. And this contains both the airports that we've
+got from our result nodes as well as the connecting
+route between them. But for each of the
+airports we also include the chain of the city, the region, the country and the continent for both the source and the target node. So this will result in a visualization
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:30:00---->00:30:45]:
+that contains the shortest
+path between SDR and ART and all the intermediate path
+elements if there are any. And for each of the
+intermediate path elements, there's also information about,
+well, the location of those. Then I'm using the
+function that I used before and that's the only part where actually our widget comes into play. So this is all unrelated to the widget and if I execute this, I
+get to see this result. Let's take a look at this. The hierarchic layout is probably best because what we see here is this is our shortest path that's from Stuttgart Airport,
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:30:45---->00:31:30]:
+going to London, Heathrow,
+Philadelphia, and ART, that's Watertown International Airport. And we also see the distances
+between those elements and for each of those elements we see, what city, region and country they are in. So we see that Stuttgart
+and London is both in on the continent, Europe, and the other two airports are in the US and the US is according to this data, is actually North American. And I believe it says it's also Africa, which is probably not correct, but that's a problem with the data and not something that we
+will have to work with today. It also says that London is
+both in England and Canada,
+
+Video Extract : None
+[Unknown Timestamp---->Unknown Timestamp]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:30:45---->00:31:30]:
+going to London, Heathrow,
+Philadelphia, and ART, that's Watertown International Airport. And we also see the distances
+between those elements and for each of those elements we see, what city, region and country they are in. So we see that Stuttgart
+and London is both in on the continent, Europe, and the other two airports are in the US and the US is according to this data, is actually North American. And I believe it says it's also Africa, which is probably not correct, but that's a problem with the data and not something that we
+will have to work with today. It also says that London is
+both in England and Canada,
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:31:30---->00:32:15]:
+so that's likely an issue
+that we have in our data. But yeah, this is nice. So this is makes for nice
+visualization of our results, but we can do more. And as a last step, I'm going to show you an integration that we just added to this plugin and that is an integration with our suite of Data
+Explorer applications. So with all of these results, I can just open them in
+an external application that we have hosted on our website, which lets me visualize and explore the
+graph in a different way. And this is actually outside the scope of the Jupyter lab extension.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:32:15---->00:33:00]:
+So this could also be used
+with different data sources and we have the same one for Neo4j. So, but this is different, so it's not going to the database, it's just allowing you to
+explore the schema and the data in from the query that you
+had in your Neo4j notebook. So I can just like, iteratively load the other
+elements in here and explore them just as you may know way
+from the Neo4j browser. And I can also, in this case
+just reveal the entire graph. And now what's the difference here? I can get much more sophisticated with regards to visualization.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:33:00---->00:33:45]:
+So there's options to
+style those elements and, it took me some time to come
+up with a nicer styling, so I prepared this one, so
+let me just load them in. And now we have like
+super cool visualization that's only possible within
+the data explorer here where you have like, there's icons in there and
+there's additional code in there. So that's much more
+sophisticated than what we, we've seen before, but it's also more helpful
+and more end user friendly so to say. And what's also unique to this application is the last thing and that is that, if we look at the schema,
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:33:45---->00:34:30]:
+we actually have the
+geo coordinates in here, so wouldn't it be cool to see those nodes actually on a map view? And this is what what we can do in here. I mark this property to
+be used as map coordinates and now if I go back to the explorer and hit the map layout, I get finally get to see my route, which goes from Stuttgart,
+via London, Heathrow, over to Philadelphia and Watertown. Okay, so much for this application. Let's see the summary. We arrived at the summary
+slide hopefully in time. I hope I was able to show you
+that creating visualizations
+
+Video Extract : None
+[Unknown Timestamp---->End of Video]:
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:33:45---->00:34:30]:
+we actually have the
+geo coordinates in here, so wouldn't it be cool to see those nodes actually on a map view? And this is what what we can do in here. I mark this property to
+be used as map coordinates and now if I go back to the explorer and hit the map layout, I get finally get to see my route, which goes from Stuttgart,
+via London, Heathrow, over to Philadelphia and Watertown. Okay, so much for this application. Let's see the summary. We arrived at the summary
+slide hopefully in time. I hope I was able to show you
+that creating visualizations
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:34:30---->00:35:15]:
+from your Neo4j data with
+the help of Jupyter Notebooks is easy and powerful. If you are a data scientist
+working with Jupyter Notebooks, you can use the yFiles
+graph for Jupyter Plugin as an entry point to render
+your Neo4j cypher query results. And you can combine the powerful tools and scripting capabilities that you get from Jupyter Notebooks to create bespoke helpful visualizations, run graph data science algorithms and interactively explore your graphs both directly in the notebook as well as conveniently in
+the generic Data Explorer app. That's it for now. We would love to hear your
+feedback about our tools. It's your input that helps
+us continuously improve them. So try the tools, share
+them with the community, leave us a star or a
+like in the social media
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:35:15---->00:36:00]:
+or of course contact us directly. I'll also hang around in the chat and I'm happy to answer
+your questions there. As always, happy diagram with your Neo4j databases and the visualization tools by Webworks. Thanks and everyone enjoy the
+conference. Back to you Alex. - That was great. People seem to like it as
+well. I see lots of clapping, so that's always good encouraging because, you know, virtual conference so we don't hear your clapping. We you need to, you
+need to emoji the claps. (Alex laughing) - Thank you so much. - We have, we are on a
+little bit over time, so we don't have much time for question, but I think we can squeeze
+in one comes from Michael, "Does it work in Google CoLab?"
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:36:00---->00:36:45]:
+Because you said there's some
+restrictions on the usage. - At this very moment it doesn't, but this should be actually doable and this is actually very
+high up in our roadmap, so I hope we are going to
+see Google CoLab support in one of the next versions. Probably if all goes well in q1, meaning, yeah, well early in 2023. So yeah, that's, it's up on our roadmap, but at the moment it doesn't
+so really Jupyter Lab or Jupyter notebooks. Sorry for that. - No problem. And then from Jason, maybe we squeeze this in as well, "Will you share the, your notebook file with your presentation or
+make it public somewhere?" So people can- - Yeah, I can do that.
+
+Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+[00:36:45---->End of Video]:
+There's already a simple example which I actually based my slides upon is already on the GitHub
+repository of the plugin. So there's a generic Neo4j
+example and the GDS example. So, but I'm going to share
+this specific one too soon. - Okay, perfect. Well done. Thank you very much Sebastian, thank you for the great
+presentation and yeah, see you soon on another Nodes
+Conference or Neo4j event. (Alex laughing) - Thank you, have a great day. - Thank you.
 

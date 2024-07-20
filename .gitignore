@@ -1,3 +1,4 @@
+transcripts/
 # Env variables
 .env
 # Mounted Storage

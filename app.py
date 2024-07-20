@@ -18,13 +18,14 @@ from prompts import refine_chunk_template as refine_prompt
 
 # Load environment variables from .env file
 
-def format_youtube_transcript(transcript_documents, output_file='youtube_script.txt'):
+def format_youtube_transcript(transcript_documents, output_folder='transcripts'):
     # Create a StringIO object to hold the content in memory
     memory_file = StringIO()
     
     # Define the output file name
     chunks = transcript_documents
-    
+    title = chunks[0].metadata['title']
+    output_file = os.path.join(output_folder,title)
     with open(output_file, 'w') as file:
         # Iterate over each chunk in the list with an index to access the next chunk
         for i in range(len(chunks)):
@@ -68,7 +69,7 @@ def get_youtube_transcript(yt_uri, chunk_size_seconds=60):
     
     transcript_documents = loader.load()
 
-    formatted_transcript = format_youtube_transcript(transcript_documents, output_file='youtube_script.txt')
+    formatted_transcript = format_youtube_transcript(transcript_documents)
 
     return formatted_transcript
 
