@@ -1,5 +1,3 @@
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:00:00---->00:00:45]:
 (upbeat music) - Thank you so much Alex for
@@ -44,19 +42,6 @@ graph visualizations in Jupyter Notebooks and labs. They won't just look beautif
 to include the information in the visualization that we
 want to provide our users with. So here's a quick overview of how all the things are connected that I'll be using today.
 
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:02:15---->00:03:00]:
-We look at automating visualization tasks with the help of literate
-programming in notebooks. I'm going to show you how to
-create custom visualizations that will help us and our users
-better understand the data hidden in our graph databases. So for this I'll show you
-how to set up Jupyter, Jupyter Notebooks to connect to Neo4j. Use Cypher Query the database contents and the graph data science library to optionally perform some analysis tasks. We'll see how to create
-graph visualizations in Jupyter Notebooks and labs. They won't just look beautiful, but we will also make sure
-to include the information in the visualization that we
-want to provide our users with. So here's a quick overview of how all the things are connected that I'll be using today.
-
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:03:00---->00:03:45]:
 Pun intended, the focus is
@@ -81,22 +66,6 @@ to access your database. Read only access is
 enough for many use cases and the data never leaves your systems or touches our service. So there's a direct connection
 between your machine
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:04:30---->00:05:15]:
-and your database and you
-can run the tools offline behind the firewall if you wish to. So don't be afraid and just try it. Okay, so let's take a look at
-the Jupyter Notebook plugin. And by the way, the plugin's
-issue tracker is on GitHub. So when you use it and feel
-like it's missing a feature, please do file an issue on GitHub and the plug-in is
-under active development and the more people find it useful, the more time we can actually
-invest into the tool. So this is what the plug-in does. It provides interactive
-graph visualization and exploration capabilities
-in the form of a widget that can be embedded in Jupyter Notebook and Jupyter lab notebook cells. So you can use it to
-visualize connected graph data while from many different
-kinds of different data sources
-
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:04:30---->00:05:15]:
 and your database and you
@@ -148,20 +117,6 @@ Jupyter Labs installation plus only the packages
 from that last slide. So the graph data science one isn't actually required
 to connect to Neo4j,
 
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:06:45---->00:07:30]:
-Here in this example I'm
-also installing the Neo4j and graph data science
-packages for later use too. Note that you might need to restart the Jupyter server after this and please be aware that the
-functionality at this time, unfortunately for compatibility reasons, you should please open them
-using a regular Jupyter Notebook or Jupyter lab server. It doesn't work in all third party viewers like Visual Studio Code yet. So now let's take a look
-at the working widget. This over to the live demo. So I have a plain
-Jupyter Labs installation plus only the packages
-from that last slide. So the graph data science one isn't actually required
-to connect to Neo4j,
-
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:07:30---->00:08:15]:
 but of course having the
@@ -189,20 +144,6 @@ to create a widget. And I'm passing in the graph instance from the cell here abo
 graph visualization and if the graph is larger, I can actually use this overview here over here to navigate my larger graph. But in this case it's small enough so I can just like collapse it. And then there's this sidebar
 with additional information. I can also expand my screen,
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:09:45---->00:10:30]:
-so in case my visualization
-is really large, so to see more and then
-I can navigate the graph by dragging it around or using the mouse or the buttons to zoom in and zoom out. Hovering over the items shows me the properties that are
-attached to the in-memory graph. And these are the
-properties that are actually from the Neo4j database.
-So if you look at these, these are exactly the ones
-that you get from the database and the label is the Neo4j. The item named label
-here is the Neo4j label. So this is a city and
-airport countries and so on. The same goes for the relationships. And clicking on them, I can use the site panel
-
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:09:45---->00:10:30]:
 so in case my visualization
@@ -260,20 +201,6 @@ passing the graph here to the widget again, but rather than directly
 showing the widget, which happens when I just write this one, I'm first configuring
 some of the properties. There's properties that have an influence on the general visualization. So like,
 
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:12:45---->00:13:30]:
-because this is actually an powerful API that provides you with
-methods and functions, and properties to
-customize the visualization to match your requirements. So let's take a look at
-at how that will work. So again, I'm running a cypher
-query here in this example, which just queries a number
-of airports and their cities, how they are related. And later on I will be
-passing the graph here to the widget again, but rather than directly
-showing the widget, which happens when I just write this one, I'm first configuring
-some of the properties. There's properties that have an influence on the general visualization. So like,
-
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:13:30---->00:14:15]:
 overall properties that
@@ -306,17 +233,6 @@ more complex logic in here like finding a certain node and showing that node in 
 neighborhood immediately. And also just for the sake
 of showing more features,
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:15:45---->00:16:30]:
-I'm disabling the overview
-graph visualization in the top left corner here initially. But now for the good
-parts, the cool parts, the really useful parts is for binding, for changing the visual appearance of the various nodes in here. So as I said before, by default all of the nodes look the same and they have the same,
-they only have their, the aesthetic label in there and we would like to change that. And they also have the same shape, color, and the edges have have the same thickness and you can change all of this
-dynamically and data bound. So the most simple form is to, well just change like the
-color of all the nodes.
-
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:15:45---->00:16:30]:
 I'm disabling the overview
@@ -362,16 +278,6 @@ importance of those items in my visualization, I can determine, I can
 specify a scale factor on a per item basis. So in this case, for example, if we would be looking
 at the airport nodes, we see that these airports actually have information about the number of runways each airport has in this dataset.
 
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:18:45---->00:19:30]:
-and a much more usable graph. Last but not least,
-there's also the option to change the geometry of the elements. For example, if I want to change their size to like indicate the
-importance of those items in my visualization, I can determine, I can
-specify a scale factor on a per item basis. So in this case, for example, if we would be looking
-at the airport nodes, we see that these airports actually have information about the number of runways each airport has in this dataset.
-
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:19:30---->00:20:15]:
 So what could argue that a
@@ -407,14 +313,6 @@ there's airport cities, region, countries and continents in there. And when I ru
 we see the right labels, we see different colors and so on. So okay, nice, but still not super
 useful. You might think. However you can start to see that with the hierarchic layout for example, with the the right layout, it's getting much easier to understand the structure of your data.
 
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:21:45---->00:22:30]:
-there's airport cities, region, countries and continents in there. And when I run this function, I get this result and now you can see that it's looking much nicer than before because the nodes have different shapes depending on the type
-we see the right labels, we see different colors and so on. So okay, nice, but still not super
-useful. You might think. However you can start to see that with the hierarchic layout for example, with the the right layout, it's getting much easier to understand the structure of your data.
-
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:22:30---->00:23:15]:
 Now you see that in your
@@ -443,18 +341,6 @@ that I can work with in my Jupyter Notebook cell. And since this is actually a p
 only include those nodes that are above a certain score. So I don't get to see the
 super unimportant airports
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:24:45---->00:25:30]:
-according to my measurement for example. So what I'm doing is
-I'm filtering the table and then for display I'm again executing a very simple cypher query. So I'm just loading the nodes that I got from the
-results from the graph data science algorithm. So these, this will just load the nodes with a score larger than
-one point greater than 1.5. So we are loading this
-and displaying this graph. Then I'm again setting
-the labels over here, but also I'm setting a custom scaling which actually uses the
-ranks that we just calculated
-
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:24:45---->00:25:30]:
 according to my measurement for example. So what I'm doing is
@@ -503,15 +389,6 @@ of graph data science, visualization and geocoding. But it's not really a graphy
 shortest path algorithm from the graph data science library to calculate the shortest path between a set of airports. And for this, again, I'm
 creating a projection for the graph data science library, which contains the airports and has route relationships only. And we're including the distance property,
 
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:27:45---->00:28:30]:
-So that's some nice combination
-of graph data science, visualization and geocoding. But it's not really a graphy example. So as a last example, we are going to use graph data science to do a really graphy tasks and that is calculating a shortest path. So we'll be using the
-shortest path algorithm from the graph data science library to calculate the shortest path between a set of airports. And for this, again, I'm
-creating a projection for the graph data science library, which contains the airports and has route relationships only. And we're including the distance property,
-
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:28:30---->00:29:15]:
 which is available in our data set. So there's someone calculated the distances
@@ -541,17 +418,6 @@ well, the location of those. Then I'm using the
 function that I used before and that's the only part where actually our widget comes into play. So this is all unrelated to the widget and if I execute this, I
 get to see this result. Let's take a look at this. The hierarchic layout is probably best because what we see here is this is our shortest path that's from Stuttgart Airport,
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:30:45---->00:31:30]:
-going to London, Heathrow,
-Philadelphia, and ART, that's Watertown International Airport. And we also see the distances
-between those elements and for each of those elements we see, what city, region and country they are in. So we see that Stuttgart
-and London is both in on the continent, Europe, and the other two airports are in the US and the US is according to this data, is actually North American. And I believe it says it's also Africa, which is probably not correct, but that's a problem with the data and not something that we
-will have to work with today. It also says that London is
-both in England and Canada,
-
-Video Extract : None
-[Unknown Timestamp---->Unknown Timestamp]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:30:45---->00:31:30]:
 going to London, Heathrow,
@@ -592,17 +458,6 @@ there's additional code in there. So that's much more
 sophisticated than what we, we've seen before, but it's also more helpful
 and more end user friendly so to say. And what's also unique to this application is the last thing and that is that, if we look at the schema,
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:33:45---->00:34:30]:
-we actually have the
-geo coordinates in here, so wouldn't it be cool to see those nodes actually on a map view? And this is what what we can do in here. I mark this property to
-be used as map coordinates and now if I go back to the explorer and hit the map layout, I get finally get to see my route, which goes from Stuttgart,
-via London, Heathrow, over to Philadelphia and Watertown. Okay, so much for this application. Let's see the summary. We arrived at the summary
-slide hopefully in time. I hope I was able to show you
-that creating visualizations
-
-Video Extract : None
-[Unknown Timestamp---->End of Video]:
 Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
 [00:33:45---->00:34:30]:
 we actually have the
