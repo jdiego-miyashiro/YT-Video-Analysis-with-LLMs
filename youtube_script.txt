@@ -1,510 +1,128 @@
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:00:00---->00:00:45]:
-(upbeat music) - Thank you so much Alex for
-this nice introduction. So, You stole the content
-of my first few slides, but so hello, Nodes 22. I'm so happy to be here today. Great to see all those
-people interested in graphs as always. And in my session as Alex said, I would like to show you some
-cool graph visualization tools for many of the great use
-cases for a graph database visualization is super valuable tool that you should be aware of and it doesn't have to be complicated as you will see. Specifically I'll talk about
-visually exploring your name, Neo4j Graphs with Jupyter Notebooks
+hello everyone in this video I will show you how to use deep learning for football analysis based on game recordings so the main idea is to extract useful information from video recordings of football games and more precisely the ultimate goal is to track each object of Interest such as the players and the ball and to capture the coordinates of each tracked object at any given frame with relatively high accuracy and this would certainly allow us to calculate many useful statistics such as ball possession rate players traveled distances the ball and players average speed and many other statistics however as you can imagine there are many challenges that we need to overcome in order to achieve that goal so the
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:00:45---->00:01:30]:
-and simple literate programming. Whether you are a software
-developer or a data scientist or a database administrator
-or a project manager, my talk should give you some ideas on when you would want to
-be using graph visualization to better understand the
-data in your Neo4j databases. After my talk, I bet some of you go and
-try this on their own data. It's safe and it's easy and it's free and it's always exciting
-to get to actually see your graph data in a meaningful
-way for the first time. So some more details about myself. So, together with my team at yWorks, I've been working in the field of graph and diagram visualization for more than what's soon
-going to be 25 years.
+application we have today presents the first step and its main functionality is to detect the players the referee and the ball then seamlessly project their coordinates on a tactical map representation of the football field okay so now let's start with the demo for the web application and then I'll be explaining the different functional ities and the reasoning behind their implementation and finally we'll do a simple code work through and of course you can find the different files for this project in the GitHub repository which you can access through the link in the description one last thing I need to add before we start the demo is that uh when training the object detection models I use the Tactical recordings of uh football games and that's because if you want to achieve a highly accurate
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:01:30---->00:02:15]:
-And our tagline is, "The
-diagramming experts," and we help teams and
-enterprises worldwide with their graph visualization tasks. As graph drawing specialists, we have seen a huge number of use cases and data sets over the years. We've been working on and
-providing high quality tools and support to our customers and the community around that topic. And the tool we'll be looking at today is just one of these tools. So here's the agenda,
-what will you learn today and what are we going
-to see in the session? We'll be looking at easy ways to work with Neo4j databases plus the Neo4j
-graph data science library in the context of Jupyter Notebooks. But don't worry, although
-this will also mean we'll be looking at some lines of code, this is not going to be really difficult.
+tactical map representation we need either a fixed camera or a camera that doesn't move too much that's why I decided not to use the regular TV podcast recordings of football games okay so without further Ado let's start with the web application demo okay so here we have the web app for football players detection with Team prediction and tactical map representation so the first page here is the how to use page you can follow the different steps here in order to navigate the app and learn how to use it but I'll show you how in this quick demo so first of all we start with the main settings we need to select a demo video we have two options here and here we have the first one selected but of
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:02:15---->00:03:00]:
-We look at automating visualization tasks with the help of literate
-programming in notebooks. I'm going to show you how to
-create custom visualizations that will help us and our users
-better understand the data hidden in our graph databases. So for this I'll show you
-how to set up Jupyter, Jupyter Notebooks to connect to Neo4j. Use Cypher Query the database contents and the graph data science library to optionally perform some analysis tasks. We'll see how to create
-graph visualizations in Jupyter Notebooks and labs. They won't just look beautiful, but we will also make sure
-to include the information in the visualization that we
-want to provide our users with. So here's a quick overview of how all the things are connected that I'll be using today.
+course if you want to use your own video you can upload it using this button and then you can preview your uploaded video over here so let me show you this is the first demo video it's a tactical camera recording for the game between France and Switzerland so the next step is to set the team names so the first team here is France and the second team is Switzerland then we need to move on to the team colors Tab and here we need to set the different team colors that will be used afterwards for team predictions so here we have a select frame slider and we need to select frame where every player is detected for example here in the first frame we don't see the goalkeeper of the Switzerland national team detected so we need to choose
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:03:00---->00:03:45]:
-Pun intended, the focus is
-on yFiles graphs for Jupyter, which is at the top and the
-left half basically explains how all this works and adds some context. So yWorks, the company I work at, creates a software development
-kit called "yFiles." It allows software developers to build sophisticated graph
-visualization applications with great automatic layouts
-and rich custom interactions. And the Jupyter widget
-we'll be looking at today is also built on top of that library. And by the way, those tools at the center, they are all free to use so
-they don't require registration and the lower two don't
-even require installation nor download. You can just use
-them for free on our website. I will only briefly speak about the data explorer apps in this session.
+another frame for example in the second frame we can see that both both goalkeepers of the two teams are detected and we can work with this Frame and then we need to select the different colors for both teams so for each team we have two colors one for the players and one for the goalkeeper and to select the colors we simply need to click on which color we need to select and then click on the detection images here so for example for the France uh players color we simply click for example on this uh pixel and the picket color will be shown in the box below now let's select the color for the France goalkeeper and we repeat the same process we pick color and it will be shown
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:03:45---->00:04:30]:
-These belong to another set of tools to interactively explore connected data and one of them can be
-launched directly from within the Jupyter widget as we'll see, but they can also be used standalone without the Jupyter context. Actually at last year's Nodes conference, I dedicated a whole session
-to the data explorer for Neo4j and even more
-so the app generator. So I won't be covering it this time so, but feel free to browse the archives and watch the recording
-after the conference. All of these tools have built in support for Neo4j databases. So all you need to get started is a set of credentials
-to access your database. Read only access is
-enough for many use cases and the data never leaves your systems or touches our service. So there's a direct connection
-between your machine
+here we can do the same thing for the Switzerland team first the players color and finally the goalkeeper color of course you don't need to do this for the demo videos because the different colors are predefined but if you if you want to upload your own video you need to perform this step in order to get uh a correct or an accurate tee prediction uh once we have the different colors set we can move on to the last tab which is the model hyperparameters and detection okay so the different parameters here will be discussed later on but here we have uh annotation options which are detection options so if you want to show the key points
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:04:30---->00:05:15]:
-and your database and you
-can run the tools offline behind the firewall if you wish to. So don't be afraid and just try it. Okay, so let's take a look at
-the Jupyter Notebook plugin. And by the way, the plugin's
-issue tracker is on GitHub. So when you use it and feel
-like it's missing a feature, please do file an issue on GitHub and the plug-in is
-under active development and the more people find it useful, the more time we can actually
-invest into the tool. So this is what the plug-in does. It provides interactive
-graph visualization and exploration capabilities
-in the form of a widget that can be embedded in Jupyter Notebook and Jupyter lab notebook cells. So you can use it to
-visualize connected graph data while from many different
-kinds of different data sources
+detection the players detection the color pallets or the ball tracks you can toggle these um options and you can save the output video if you check this uh box and of course you can enter the file name which is optional if you don't want to enter a file name one will be generated and you can find of course the output video in the output uh folder let's start with the player detection option all right as you can see here we have the different players detected and and we have the team prediction for France and Switzerland and here we have each player with the color palette detected which is used for the team prediction and of course here we have
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:05:15---->00:06:00]:
-that you have access
-to from your notebooks. And of course this in
-this includes Neo4j graphs which are supported right out the the box. This enables you to
-visualize the graph results of cypher queries. So the main difference
-to the Neo4j browser where you can do similar
-things is the target audience and thus also the support for
-more sophisticated use cases. While the Neo4j browser is essential for database
-administrator tasks, it's not so much a great
-scripting environment for one, it's basically limited to
-running cypher queries, but in a Jupyter notebook you can do that but you can do so much more. As a data scientist, you can write complex
-interactive notebooks that dynamically query
-data from various sources,
+the Tactical map with the ball track representation now the FPS here is low is around four on average but if we run the same code on a Jupiter notebook we can get it up to8 FPS but of course uh many more optimization steps can be taken in order to improve the FPS all right now let's stop the detection and add the uh show key Point detection option let's start again now it will show you the different field key points that were detected and these key points are used to build the Tactical map representation and as you can see here we have an efficient and accurate key Point detection all right now let's move on to the second demo
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:06:00---->00:06:45]:
-do sophisticated pre-processing and then combine this with
-any number of cypher queries to create a far more complex and hopefully helpful visual realization. Also with widget you can apply various automatic
-graph layouts to the graphs in order to highlight the
-different aspects of the structure and the connectivity in your data. And with advanced custom
-rules for the visualization, you can add style to your nodes and relationships in the diagram and make it easier for the user to quickly see the important data. So we'll get to this in a minute. Installing the widget, it is easy. For example, you can
-just use "pip install." So if you have used
-Jupyter notebooks before, that should be all familiar to you.
+video so we simply need to select the demo two op option on the main settings and everything else will be changed accordingly from the team names to the team colors so we only need to uh click on start detection all right so here we have two teams with quite similar colors and that's why the team prediction isn't as accurate and we will discuss later on what can be done to improve on that and if you've noticed it as well in the beginning the Tactical map representation was wasn't accurate but then it got corrected when the camera started moving and that's another functionality implemented to correct the different uh
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:06:45---->00:07:30]:
-Here in this example I'm
-also installing the Neo4j and graph data science
-packages for later use too. Note that you might need to restart the Jupyter server after this and please be aware that the
-functionality at this time, unfortunately for compatibility reasons, you should please open them
-using a regular Jupyter Notebook or Jupyter lab server. It doesn't work in all third party viewers like Visual Studio Code yet. So now let's take a look
-at the working widget. This over to the live demo. So I have a plain
-Jupyter Labs installation plus only the packages
-from that last slide. So the graph data science one isn't actually required
-to connect to Neo4j,
+representation based on the camera movement okay so that's it for the demo let's stop the detection and let's discuss how the different functionalities were implemented okay so here we have a flowchart of the football analysis web application and we start here with an input video of course which is passed to two object detect ction models as you can see here so the first functionality in this web app and the most crucial one is the detection of the different objects of interest in the input video and here I trained two models one for the player the referee and the ball detection and the other one is for the field key points so the models I trained are YOLO V8 models which were trained on a custom data set that I labeled manually each data set
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:07:30---->00:08:15]:
-but of course having the
-graph data science library available in a Jupyter notebook really allows for some
-very cool use cases. For the upcoming examples, I'm using the airports example database that comes with one of the
-graph data science tutorials. So I have set up a Neo4j (indistinct) with graph data science library enabled and I uploaded the sample
-database data before. So this means I can now run cypher queries right in my Jupyter Notebook
-using the Python API. So here I am importing
-the graph database object from the Neo4j package in
-my Jupyter Notebook cell. Instantiating a driver and the session with a certain database. Then I run the cypher query over here. So far nothing special.
+contains about 500 images and as I said earlier I used tactical map recordings of football games in order to create these uh data sets and I used free annotation tools label me and Cat for The annotation of the data sets now I won't go into details on how to install and use these tools but you can find different guides on the internet and in their uh respective GitHub repositories which you can find the links for in the description so now that we have the data sets we can train uh the YOLO models and I've used hyperparameter tune technique implemented in Yolo V8 to achieve great results even with these small custom data sets that I've have created so as we can see here the confusion matrices shows that we have achieved relatively
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:08:15---->00:09:00]:
-And this is all just the regular Neo4j API available in the Python
-Jupyter Notebook version. What I'm doing here is the
-result of the cypher query. I'm calling the dot graph
-function to get the graph as an in-memory data structure. If I execute the cell, I get to see this as the graph which is well not really helpful because there is no built in support for visualizing graphs at the Neo4j level inside Jupyter notebooks. So this is where our
-plugin comes in head handy. So what I'm doing is I'm just importing this
-graph widget object from the yFiles Jupyter graphs package
+great results for all the different classes uh in both models except for the ball class where it only predicted 25% of the balls present in the validation set so we have low recall for the ball class and that's expected of course because the ball class was was underrepresented in the data set which is also true for other field key points and as we've seen that class imbalance affects especially the recall for those classes meaning that the object won't be detected as much as we want to and this issue can be addressed using larger data sets or through data augmentation techniques but for the time being I'm satisfied with the current models results but if you want to train a more
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:09:00---->00:09:45]:
-and calling the constructor
-to create a widget. And I'm passing in the graph instance from the cell here above. So this is a Neo4j graph and Neo4j graphs, just along with some other graph forwards, are supported out of the box. So I don't need to do anything special to visualize my Neo4j. All I do is execute this cell and this actually launches the widget. So this is the widget and it consists of two paints where there's the central
-graph visualization and if the graph is larger, I can actually use this overview here over here to navigate my larger graph. But in this case it's small enough so I can just like collapse it. And then there's this sidebar
-with additional information. I can also expand my screen,
+accurate YOLO V8 model it is recommended that you use at least 1 ,500 images per class and you can find the different tips on how to create a good custom data set on the ulo V8 documentation page and you can also find the link for that in the description all right so now we have the models we need that pretty much represents all the machine learning present in this application and all the remaining functionalities are simple computer vision algorithms that uses the results obtained from these detection models so the results from the players detection model are used first to extract the color pet for each detected player this extracted color palette will be used later on to predict the team of the detected player and the result from
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:09:45---->00:10:30]:
-so in case my visualization
-is really large, so to see more and then
-I can navigate the graph by dragging it around or using the mouse or the buttons to zoom in and zoom out. Hovering over the items shows me the properties that are
-attached to the in-memory graph. And these are the
-properties that are actually from the Neo4j database.
-So if you look at these, these are exactly the ones
-that you get from the database and the label is the Neo4j. The item named label
-here is the Neo4j label. So this is a city and
-airport countries and so on. The same goes for the relationships. And clicking on them, I can use the site panel
+the keypoint detection model is used to calculate a homography matrix which is a matrix that Maps the key points position on the Tactical map and the position of the detected key points on the video so once we have the homography Matrix we can map each point on the frame to a point on the Tactical map map and that is indeed the next functionality which is calculating the player's position on the Tactical map so once we have the bounding boxes for each detected player we can get the coordinate of each player on the frame and then using the homography Matrix we can map that coordinate to the Tactical map and that's basically how we get the representation now once we have the team predictions for the detected players we can add that as well as the ball tracks representation on the Tactical map in
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:10:30---->00:11:15]:
-to take a look at the
-data in a more static way and for example, to compare items I can with control click and
-I can select multiple elements and see there and compare their values, right inside this panel over here. But it may be difficult
-to identify a certain item and that's what the search panel is for. So I, I know that there should
-be Atlanta somewhere in here. So I just look at this and this lets me focus
-the note inside the graph because right now all I see is that this is in the airport. So I would have to like
-hover over all these elements or click them to see which
-one is the Atlanta port. So we are going to improve
-the situation in a minute
+order to generate the output video all right so now let's discuss a little bit further the algorithm used for the team prediction as well as the homography transformation for the team prediction algorithm I was first thinking about using a clustering algorithm or clustering model with two clusters let's say for example team a and Team B and that way I thought we could distinguish uh both teams so I tried this idea and here we have for example for this Frame we need to extract all the players bounding boxes after that I wanted to use the extracted images of the players to train train the clustering algorithms I tried K means and DB scan well obviously we need to train a model every single frame since we will not be tracking the players that's exactly why we can't be using the images as a whole
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:11:15---->00:12:00]:
-because by default if you show the widget, you will only see get
-to see the note labels and the the relationship types
-right in the visualization and you have to, to look at the data . . . panel to see more of the properties. So that's not yet a great visualization and we'll change that in a minute. But before I do that, I'll show you the last
-tap we have over here, which is a neighborhood view. And this is a contextual view, meaning that whenever I change the context by selecting an element over here, I get to see the immediate
-neighbors of that selected node, as a small utility graph. And in this case all
-neighbors one hop away.
+for the training process of the clustering algorithm as it will make the app very slow but I tried multiple feature extraction methods such as using a pre-trained CNN or averaging the colors present in each image or extracting the dominant colors palette these extracted features I tried to use them for the uh training of the clustering model however no matter what feature extraction method we use I obtained very poor results regarding the instantaneous team prediction and to illustrate the main issues regarding this approach let's check this example so here we have a random frame where we have successfully detected the different players and calculated the average color
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:12:00---->00:12:45]:
-So I can change the number
-of the death over here interactively to get to see the neighbors of the neighbors and the neighbors of the neighbors and the neighbors and so on. And I can use this to
-actually navigate my graph. So rather than having
-to work on this view, I can click on these items and
-they will both synchronize. So whether I'm clicking
-over here or there, this lets me navigate my graph and of course that's also
-the properties view in here. So that's the basic setup that we have for the
-widget and what it does. And it's just one line of code away. And, but as I said, to
-make this more useful, we have an API provided
+for each player in this image and here we have the position of each player in the RGB space now we can see clearly that we have a player far away from all the others and that's because we detected the goalkeeper in this Frame that is wearing a reddish colored kit so using DP scan is expected to fail in this case but even if we remove the goalkeepers from this equation we still don't see a clear separation between both teams that's understandable since both teams are wearing shade of blue so I figured let's use a rather straightforward solution without any machine learning model and that is by defining from the start the colors of each team and then each time we detect a player we can extract its pette of dominant colors and then calculate the
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:12:45---->00:13:30]:
-because this is actually an powerful API that provides you with
-methods and functions, and properties to
-customize the visualization to match your requirements. So let's take a look at
-at how that will work. So again, I'm running a cypher
-query here in this example, which just queries a number
-of airports and their cities, how they are related. And later on I will be
-passing the graph here to the widget again, but rather than directly
-showing the widget, which happens when I just write this one, I'm first configuring
-some of the properties. There's properties that have an influence on the general visualization. So like,
+distance between those colors and the predefined team colors and as such we can assign each player to its team more accurately but since we have the green grasp present in almost every image of detected players we can expect that the green color will always be present in the color palette we extract which is not very useful for the team prediction so that's why I decided to use a smaller centered rectangle to extract the color palette as shown here and that indeed improved dramatically the accuracy of the team prediction algorithm one last thing I need to note before move on to the next functionality algorithm is that the distances between the extracted color palette and the predefined colors are calculated in the lab space not the RGB space and that's because it is
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:13:30---->00:14:15]:
-overall properties that
-affect all the items like directed, which tells which is whether
-my graph that I'm displaying should by default contain arrowheads at the end of the edges.
-So it, for example, in the social networks where
-all my relationships are like nodes and they are person
-one nodes, person two, then it's probably a
-symmetric relationship and I don't want to show them
-as a directed relationship. And I can also switch the graph layout because this is something I
-forgot you to tell about here is that apart from the default organic layout that we see here, which is a forced directed layout,
+reported that the distances in that space are more meaningful and are much closer to the perception of the human eye and that's what we want okay so now let's move on to the next functionality which is transforming the coordinates of the detected players from the frame plane to the Tactical map plane now as I said to achieve this transformation we will be using something called The homography Matrix which is a commonly used Matrix to shift perspective so as Illustrated in this image we can use it to look to the same scene from different point of views and the transformation from one POV to the other is obtained through this homography Matrix so this is exactly the transformation we need to use in this application and to achieve that we need to map at least four points from the first point of view to the second point of view and in our case we
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:14:15---->00:15:00]:
-there's this menu item here which lets me choose
-different automatic layouts and different layouts allow you to highlight different
-aspects of the graph. For example, the
-hierarchic layout shows me that this is actually a (indistinct) graph that I got from the query, which is pretty obvious because the query basically was to match airports and their first degree neighbors. And since the those are all direct edges, we see that there's airports all on the one hand side of
-the graph and the continent, cities and regions on
-the second partition. So choosing an automatic layout may help your users better
-understand the data.
+have a tactical map in which we defined the certain number of key points and save their coordinates now when we detect at least four key points on any given frame we can calculate a homography matrix and as you can see in this example one thing I noticed is that with EXA L four key points we can have 100% accuracy of POV shift using the homography Matrix or the homography transformation especially in the proximity of these four points however when we increase the number of key points the accuracy will decrease and that can be due to a slight warp in the camera recording or in case the points are not in the same 3D planner as I found mentioned in this stack Overflow post and after some trials I figured
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:15:00---->00:15:45]:
-And to help them choose the right layout. You can do this programmatically too. So here in this example I'm choosing the orthogonal
-layout to be used initially, I am also configuring
-the neighborhood view that I just showed you so that it'll be using three levels and initially we'll be
-using the, in this case, the first node from my graph. And of course I could be using
-more complex logic in here like finding a certain node and showing that node in the neighborhood. I also configure the visualization to not show the sidebar initially. And once the user opens the sidebar, we want to see the
-neighborhood immediately. And also just for the sake
-of showing more features,
+that the error from the homography transformation is not that big so we can work with it for now but the main issue was the shaky and jumpy behavior of the coordinates on the Tactical map which is due basically to the fact that we're calculating the homography uh Matrix in every single frame where we detect more than four key points and that's why I introduced a homography matrix update condition that is used to determine in every single frame whether to update the homography Matrix or to use the last one and this would obviously reduce the computational cost which will improve a little bit the frame rate and also make the Tactical map representation much smoother and the condition I set is a rather simple one where in each frame if we detect more than a certain number of key points that were detected in the
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:15:45---->00:16:30]:
-I'm disabling the overview
-graph visualization in the top left corner here initially. But now for the good
-parts, the cool parts, the really useful parts is for binding, for changing the visual appearance of the various nodes in here. So as I said before, by default all of the nodes look the same and they have the same,
-they only have their, the aesthetic label in there and we would like to change that. And they also have the same shape, color, and the edges have have the same thickness and you can change all of this
-dynamically and data bound. So the most simple form is to, well just change like the
-color of all the nodes.
+previous frame we calculate if those common key points have moved on average Beyond a certain threshold and if that's the case we need to update the homography Matrix and if not we will keep using the last calculated one so the number of the common key points as well as the distance threshold are hyper parameters that should be set carefully now once we have the coordinates of the players and the ball on the Tactical map we can easily track the ball movement since we only have one ball present in the field at each frame and that indeed presents the last functionality of this application and finally the annotated frame is displayed and as we've seen in the demo at the beginning of this video we have on average 4 FPS but as we can see here if we run the same code on a notebook we can improve that FPS up to
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:16:30---->00:17:15]:
-And this what works by
-using a custom mapping. So this is a mapping
-function for each node. It'll return blue. Well that's a pretty similar and actually not quite useful mapping because well, this will change
-the color of all the nodes. But it can get more sophisticated and use the data that
-is bound and available at the various items to drive the visualization. So in the second line, I'm determining what color to
-use for the edges in my graph and we'll be using orange if it's actually in city relationship and all other edges will be black. So this is using
+eight on average all right so now let's go over the code for the different functionalities that we discussed so first we need to get the labels as defined for the two data sets and as we can see we have them stored in these yaml configuration files that were used to train the YOLO V8 models so now we have both the numerical and alphabetical representation of the different labels and we will be using that to identify the objects we detect so then we need to set the video paths as well as the team colors parameters and as as I mentioned earlier we convert the colors to the lab format in order to calculate the distances for the team prediction then we need to import the YOLO models so we have two models for the player detection
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:17:15---->00:18:00]:
-the properties that are
-available in memory. And there's this extra label property which is mapped to the
-Neo4j relationship type, just for convenience. They have both been called
-label here in this case. So we are checking the relationship type, whether it's the city, and then we'll be using orange lines and all black for the other ones. So, but apart from only
-specifying constant values, you can also make really dynamic values. And specifically for the label mapping, if we look at the airport, there is other information that
-we would rather like to see directly in the visualization. For example, I would
-prefer seeing the IATA code
+and for the key points uh detection after that we set some hyper parameters such as the confidence threshold for both models and the keyo displacement threshold and then we start the capture Loop so in this Loop we will process each frame so here we first increment the frame counter and we read the frame from the capture so in each frame we create a new copy of the Tactical map so we can display the uh detected objects uh coordinates and then here we set the ball tracking history variable in case we exceeded a certain number of frames without detecting any ball object so the first part in this uh code is the object detection and coordinate transformation so here we get the uh result from both models detections and we can see we have
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:18:00---->00:18:45]:
-and the city name for each of the airports directly in the visualization. So what I'm doing here is I'm
-declaring a mapping function for each node from the
-node properties to a label. And what I'm doing is here I'm querying the IATA code and the city property of the node combining this with a new line character. And I'm only applying
-this to the airport nodes because the other node
-don't have these properties. And for all other nodes, I'm
-just using their name property, which in this case is the city and city actually has a name property. So this should be, should result in an nicer label
+the results stored here here for the bounding boxes for both models as well as the labels and then we can extract the alphabetical representation of the detected labels after that we need to get the detected key points or field key points uh coordinates on both the Tactical map which are predefined coordinates and the coordinates on the current frame we will be using those coordinates of course to calculate the homography Matrix so here if we detected more than three labels meaning four or more key points we will check the update condition and here we have the frame number bigger than one meaning that if we're on the first frame we of course need to calculate the homography without checking the condition because we don't
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:18:45---->00:19:30]:
-and a much more usable graph. Last but not least,
-there's also the option to change the geometry of the elements. For example, if I want to change their size to like indicate the
-importance of those items in my visualization, I can determine, I can
-specify a scale factor on a per item basis. So in this case, for example, if we would be looking
-at the airport nodes, we see that these airports actually have information about the number of runways each airport has in this dataset.
+have a previously calculated homography Matrix but if the frame number is bigger than one we need first to check how many common key points are detected so if we have more than three common key points detected we need to calculate the error between the position of the uh detected key points on this Frame and on the previous uh frame so here we used the mean squared error and if that error exceeds a certain predefined tolerance we need to update the homography Matrix now the homography Matrix is calculated using this function find homography from open CV and I forget to mention that there are other methods to calculate the homography Matrix or to perform respective shift and there are uh ones that involves deep learning or machine learning but I wanted to keep things
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:19:30---->00:20:15]:
-So what could argue that a
-larger airport has many runways, and I would like to highlight
-these larger airports by increasing the size of these nodes. So this is what I'm doing here. I'm accessing the runways
-property of the nodes. I'm dividing it by four and adding one to get values like 1, 1.25, 1.5, 1.75 and so on. This is just an arbitrary
-function that I came up with, which worked nice for my example. And all other nodes won't be scaled, so they will stay at their original size. So see, let's see how that works out. So this is the new
-graph and as you can see it has a different layout. It uses the orthogonal layout.
+simple for this application and using this uh function from open CV we can obtain relatively good results so once we have the homography Matrix we can uh transform the coordinates of the detected players from the frame to the Tactical map and we can achieve that using a simple matrix multiplication as shown here so then we need to transform the ball coordinates as well and as a final step we update the ball tracking history so we uh save the uh position of the ball on both the Tactical map and the frame but we will only display the tracks on the Tactical map since the tracks on the input video are not relevant since the camera is moving so the tracks won't be uh reliable and we
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:20:15---->00:21:00]:
-The node are blue and the edges are, the in city edges are actually orange. And for the various nodes, you can see that the
-code and the city name is actually rendered
-right on top of the node. And if I open the sidebar, it directly starts with the neighborhood and I just accidentally click the element. But once I reload this, you would see the one
-that I specified in code to be highlighted and shown immediately in the neighborhood view. Okay, so this is is just
-a little bit of coding and you don't want to like repeat this for all of your experiments. So what you can do of course is
+have here set some conditions for the track history so for instance this first condition would create new track for the ball if it moved dramatically from the previous position and this condition here would prevent the ball tracking history from surpassing Max length that we defined earlier so the second part of this algorithm is the Players team prediction so first of all we need to convert the frame from BGR to RGB since we're using open CV and it uses uh as default the BGR setting then we have this Loop which will extract the color palette from each detected player so the first part here is to extract a centered and much smaller rectangle instead of
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:21:00---->00:21:45]:
-with just little helper
-function that I created here, and I called it "Create Airport Graph." and it does all of the stuff
-that I just showed you, and encapsulated away in a simple function with some simple configurations of it. It's just very simple python and I won't go into the details, but it basically does the
-same that I just showed you, with a few more convenience things. So this means that once
-I execute this cell, I have this function available
-in my Jupyter notebooks. And now displaying a graph from
-my database is really easy. I just need to call one
-function and passing the graph. So again, I'm running a
-cypher query this time
+the whole bounding box of each player and this cented filter would be used to extract the color palette so so the color palette extraction is performed using this function from the pillow library and once we have the color palette extracted we need to get the top dominant colors so here we calculate the redundance of each color and we sort the values then we can get for example the top three dominant colors which are defined in this pallette interval variable from 0 to 5 all right so once we have the color palette we can append it to this list and then we can use the list of extracted color palettes to predict the team for each player so as I said we will be using the distance in the lab uh color space so that's why we
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:21:45---->00:22:30]:
-there's airport cities, region, countries and continents in there. And when I run this function, I get this result and now you can see that it's looking much nicer than before because the nodes have different shapes depending on the type
-we see the right labels, we see different colors and so on. So okay, nice, but still not super
-useful. You might think. However you can start to see that with the hierarchic layout for example, with the the right layout, it's getting much easier to understand the structure of your data.
+first need to convert the detected color pallet from RGB to lab and then here we calculate the distance using this method from SK image which calculat the ukian distance in the lab color space so in this Loop for each color in each color palette we calculate its distance from the four predefined colors and then we can assign each color to the corresponding team which is closer to that color so here for instance we have a palette of five colors and each color will be assigned a team and then using a simple voting mechanism we can get the team prediction for each player which is uh performed in this Loop so we Loop over the different player distances and
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
 [00:22:30---->00:23:15]:
-Now you see that in your
-database there's always this, or at least in the query, there's always these airport
-nodes connecting to cities, connected to countries and to continent. So that's a nice representation of our data that we got here. But now let's add graph
-data science to this and make this really powerful. So because since this is in a notebook, I can actually use third party packages and APIs like matplotlib, or pandas, to add more features to this. So this is a little bit of programming. So what I'm doing here is
-it's not that much code. And what I'm doing here is
-using the graph data science
+then we uh predict the the players team by vote counting and that's how we perform the team players prediction and now moving on to the last part which is to annotate the current frame and the Tactical map so first we Loop over all the detected objects by the player detection model and we display the color palette next to each detected object bounding box and then we annotate the Tactical map with the player position for each team with the corresponding color and then we add The annotation of course for the referee bounding box as well as the ball bounding box and then we add the ball tracking line on the Tactical map and as a final step we combine all The annotation in one single uh output frame and then we display the output frame and we move on to the next
 
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:23:15---->00:24:00]:
-module to actually first
-calculate some graph data science, in this case the (indistinct) algorithm to calculate some scores
-for all the airports because I want to, suppose I want to compare
-the various airports in my database and see how they compare with regards to the
-(indistinct) algorithm. So what I do here, and I won't go too much into details, I'm using the graph data science module to project a sub-graph which only consists of the airport nodes and the
-"has route" relationships because that's the network of how the different pairs
-of airports are connected, whether there's a flight
-available between them and the has route
-relationships in our database
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:24:00---->00:24:45]:
-connects all the database of the airports. And with the page rank, I can get a measure of how important or how central a certain airport will be. So calling the GDS library, I get an in-memory result
-that I can work with in my Jupyter Notebook cell. And since this is actually a pandas table, I can use the pandas API to, for example, filter the table and
-only include those nodes that are above a certain score. So I don't get to see the
-super unimportant airports
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:24:45---->00:25:30]:
-according to my measurement for example. So what I'm doing is
-I'm filtering the table and then for display I'm again executing a very simple cypher query. So I'm just loading the nodes that I got from the
-results from the graph data science algorithm. So these, this will just load the nodes with a score larger than
-one point greater than 1.5. So we are loading this
-and displaying this graph. Then I'm again setting
-the labels over here, but also I'm setting a custom scaling which actually uses the
-ranks that we just calculated
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:25:30---->00:26:15]:
-to scale the nodes
-according to their ranks. So, and I can use a custom function here. So any function that suits my use case, I can just code here because
-this is all just python codes, simple python code. So I'm, I'm using a square root function. So not to scale the nodes linearly with respect to their scores because that would lead to super huge nodes in the visualization. So, I thought that using
-square root works well and what I'm also doing is
-I'm using the rank information to color map the nodes. So I'm using third party library, this is from matplotlib
-to get a color map, which basically gives me a nice
-gradient of different colors and I'm using,
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:26:15---->00:27:00]:
-I'm mapping the range of the values that I have in my data
-set, in my results set, to map them to these colors. Last but not least, you may
-have seen that in the data set, the airports actually have
-some interesting properties called "lon" and "lat" which is actually longitude and latitude. So these are geo coordinates. So I am using another mapping
-that I can specify here, which is the node position mapping, which allows me for each node, to specify where on the
-screen I want it to be placed. So why not use the geo
-coordinates for that? So I'm just using this super
-scientific formula over here
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:27:00---->00:27:45]:
-that I came up with multiplying
-the longitude value by 150 and the latitude by minus 200. And if I run this, we get to see this, DNS hiccup, but there's the results. So, if you look at this, you will probably recognize that over here there's actually Europe,
-this is the world map, there's Asia over here, somewhere here should be Australia, south America and the
-US. And if you zoom in, we see that there's
-these airports over here. For example, this is
-Paris Charles du Gaulle, important airport, which we see because it has this light
-green and the larger size according to our measurements.
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:27:45---->00:28:30]:
-So that's some nice combination
-of graph data science, visualization and geocoding. But it's not really a graphy example. So as a last example, we are going to use graph data science to do a really graphy tasks and that is calculating a shortest path. So we'll be using the
-shortest path algorithm from the graph data science library to calculate the shortest path between a set of airports. And for this, again, I'm
-creating a projection for the graph data science library, which contains the airports and has route relationships only. And we're including the distance property,
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:28:30---->00:29:15]:
-which is available in our data set. So there's someone calculated the distances
-between all those airports, the flight distances, and we used these distances to calculate the shortest path
-between one pair of airports. And I'm using this utility function from the GDS library
-to load these airports. In this case it's Stuttgart and ART calling the shortest path method. And what this results in
-is just a set of nodes, just a set of airport nodes. So because the draft data science library only ran the query the . . .
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:29:15---->00:30:00]:
-the algorithm on the airport nodes and it doesn't have the information about the other nodes
-that we have in there like country location, city,
-country, continent and so on. So what I'm doing next is
-with those results, again, I'm doing another query to actually load a sub-graph
-from the full database. And this contains both the airports that we've
-got from our result nodes as well as the connecting
-route between them. But for each of the
-airports we also include the chain of the city, the region, the country and the continent for both the source and the target node. So this will result in a visualization
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:30:00---->00:30:45]:
-that contains the shortest
-path between SDR and ART and all the intermediate path
-elements if there are any. And for each of the
-intermediate path elements, there's also information about,
-well, the location of those. Then I'm using the
-function that I used before and that's the only part where actually our widget comes into play. So this is all unrelated to the widget and if I execute this, I
-get to see this result. Let's take a look at this. The hierarchic layout is probably best because what we see here is this is our shortest path that's from Stuttgart Airport,
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:30:45---->00:31:30]:
-going to London, Heathrow,
-Philadelphia, and ART, that's Watertown International Airport. And we also see the distances
-between those elements and for each of those elements we see, what city, region and country they are in. So we see that Stuttgart
-and London is both in on the continent, Europe, and the other two airports are in the US and the US is according to this data, is actually North American. And I believe it says it's also Africa, which is probably not correct, but that's a problem with the data and not something that we
-will have to work with today. It also says that London is
-both in England and Canada,
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:31:30---->00:32:15]:
-so that's likely an issue
-that we have in our data. But yeah, this is nice. So this is makes for nice
-visualization of our results, but we can do more. And as a last step, I'm going to show you an integration that we just added to this plugin and that is an integration with our suite of Data
-Explorer applications. So with all of these results, I can just open them in
-an external application that we have hosted on our website, which lets me visualize and explore the
-graph in a different way. And this is actually outside the scope of the Jupyter lab extension.
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:32:15---->00:33:00]:
-So this could also be used
-with different data sources and we have the same one for Neo4j. So, but this is different, so it's not going to the database, it's just allowing you to
-explore the schema and the data in from the query that you
-had in your Neo4j notebook. So I can just like, iteratively load the other
-elements in here and explore them just as you may know way
-from the Neo4j browser. And I can also, in this case
-just reveal the entire graph. And now what's the difference here? I can get much more sophisticated with regards to visualization.
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:33:00---->00:33:45]:
-So there's options to
-style those elements and, it took me some time to come
-up with a nicer styling, so I prepared this one, so
-let me just load them in. And now we have like
-super cool visualization that's only possible within
-the data explorer here where you have like, there's icons in there and
-there's additional code in there. So that's much more
-sophisticated than what we, we've seen before, but it's also more helpful
-and more end user friendly so to say. And what's also unique to this application is the last thing and that is that, if we look at the schema,
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:33:45---->00:34:30]:
-we actually have the
-geo coordinates in here, so wouldn't it be cool to see those nodes actually on a map view? And this is what what we can do in here. I mark this property to
-be used as map coordinates and now if I go back to the explorer and hit the map layout, I get finally get to see my route, which goes from Stuttgart,
-via London, Heathrow, over to Philadelphia and Watertown. Okay, so much for this application. Let's see the summary. We arrived at the summary
-slide hopefully in time. I hope I was able to show you
-that creating visualizations
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:34:30---->00:35:15]:
-from your Neo4j data with
-the help of Jupyter Notebooks is easy and powerful. If you are a data scientist
-working with Jupyter Notebooks, you can use the yFiles
-graph for Jupyter Plugin as an entry point to render
-your Neo4j cypher query results. And you can combine the powerful tools and scripting capabilities that you get from Jupyter Notebooks to create bespoke helpful visualizations, run graph data science algorithms and interactively explore your graphs both directly in the notebook as well as conveniently in
-the generic Data Explorer app. That's it for now. We would love to hear your
-feedback about our tools. It's your input that helps
-us continuously improve them. So try the tools, share
-them with the community, leave us a star or a
-like in the social media
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:35:15---->00:36:00]:
-or of course contact us directly. I'll also hang around in the chat and I'm happy to answer
-your questions there. As always, happy diagram with your Neo4j databases and the visualization tools by Webworks. Thanks and everyone enjoy the
-conference. Back to you Alex. - That was great. People seem to like it as
-well. I see lots of clapping, so that's always good encouraging because, you know, virtual conference so we don't hear your clapping. We you need to, you
-need to emoji the claps. (Alex laughing) - Thank you so much. - We have, we are on a
-little bit over time, so we don't have much time for question, but I think we can squeeze
-in one comes from Michael, "Does it work in Google CoLab?"
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:36:00---->00:36:45]:
-Because you said there's some
-restrictions on the usage. - At this very moment it doesn't, but this should be actually doable and this is actually very
-high up in our roadmap, so I hope we are going to
-see Google CoLab support in one of the next versions. Probably if all goes well in q1, meaning, yeah, well early in 2023. So yeah, that's, it's up on our roadmap, but at the moment it doesn't
-so really Jupyter Lab or Jupyter notebooks. Sorry for that. - No problem. And then from Jason, maybe we squeeze this in as well, "Will you share the, your notebook file with your presentation or
-make it public somewhere?" So people can- - Yeah, I can do that.
-
-Video Extract : 065 Explore Your Graphs Visually With Jupyter Notebooks - NODES2022 - Sebastian Müller
-[00:36:45---->End of Video]:
-There's already a simple example which I actually based my slides upon is already on the GitHub
-repository of the plugin. So there's a generic Neo4j
-example and the GDS example. So, but I'm going to share
-this specific one too soon. - Okay, perfect. Well done. Thank you very much Sebastian, thank you for the great
-presentation and yeah, see you soon on another Nodes
-Conference or Neo4j event. (Alex laughing) - Thank you, have a great day. - Thank you.
+Video Extract : Computer Vision for Football Analysis in Python with Yolov8 & OpenCV
+[00:23:15---->End of Video]:
+iteration all right so let me now run this code to show you what is the expected result all right and as you can see here we have a higher frame rate and you can see all the different annotation s uh that we discussed and you can click on P to pose uh the detection or Q to quit the detection all right so that's it for this application as I said you can find the code for this project in the GitHub repository uh through the link in the description and that's it for this video so see you next time
 
