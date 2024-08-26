@@ -3,34 +3,32 @@ import streamlit as st
 
 from dotenv import load_dotenv
 from langchain.chains.summarize import load_summarize_chain
-from langchain_openai import ChatOpenAI
-from langchain.chains import MapReduceDocumentsChain, ReduceDocumentsChain
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain.chains import (
+    MapReduceDocumentsChain, 
+    ReduceDocumentsChain, 
+    create_retrieval_chain, 
+    create_history_aware_retriever
+)
+from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import PromptTemplate
 from langchain import hub
-from langchain.chains import create_retrieval_chain
-from langchain.chains import create_history_aware_retriever
-from langchain_community.embeddings.sentence_transformer import (
-    SentenceTransformerEmbeddings,
-)
-
+from langchain_community.vectorstores import Neo4jVector
+from langchain_community.graphs import Neo4jGraph
+from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-
-
-from langchain_core.messages import HumanMessage
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_core.messages import HumanMessage
+
 from io import StringIO
 
 from prompts import initial_chunk_prompt_template as initial_prompt
 from prompts import refine_chunk_template as refine_prompt
 
 from streamlit_agraph import agraph, Node, Edge, Config
-from streamlit_agraph.config import Config
 
 from collections import defaultdict
 
@@ -131,18 +129,13 @@ def create_knowledge_graph(documents,temperature=.2,max_tokens=4096):
     graph_documents = llm_transformer.convert_to_graph_documents(documents)
         
     return graph_documents
-def create_streamlit_graph_elements(graph_documents, k=100):
-    """
-    Constructs lists of nodes and edges for a Streamlit graph from a list of graph documents.
-    Ensures that nodes and edges are unique, and only includes the top `k` nodes with the most connections.
 
-    Parameters:
-    graph_documents (list): List of documents where each document contains nodes and relationships.
-    k (int): Number of top nodes to include based on their degree (number of connections).
+def scale_node_size(degree, min_size=1, max_size=50, min_degree=1, max_degree=1):
+    if max_degree == min_degree:
+        return min_size
+    return min_size + (degree - min_degree) / (max_degree - min_degree) * (max_size - min_size)
 
-    Returns:
-    tuple: A tuple containing two lists, one for nodes and one for edges.
-    """
+def create_streamlit_graph_elements(graph_documents, k=100, min_size=1, max_size=50):
     unique_nodes = {}
     unique_edges = {}
 
@@ -160,10 +153,6 @@ def create_streamlit_graph_elements(graph_documents, k=100):
     # Determine the top k nodes by degree
     top_k_nodes = set(sorted(node_degree, key=node_degree.get, reverse=True)[:k])
 
-    # Function to scale node size based on degree
-    def scale_node_size(degree, min_size=5, max_size=50, min_degree=1, max_degree=max(node_degree.values())):
-        return min_size + (degree - min_degree) / (max_degree - min_degree) * (max_size - min_size)
-
     # Add the top k nodes to the nodes list
     for doc in graph_documents:
         for node in doc.nodes:
@@ -173,7 +162,7 @@ def create_streamlit_graph_elements(graph_documents, k=100):
                 unique_nodes[node_id] = Node(
                     id=node_id,
                     label=node.id,
-                    size=scale_node_size(degree),  # Scale size based on degree
+                    size=scale_node_size(degree, min_size, max_size, min(node_degree.values()), max(node_degree.values())),  # Scale size based on degree
                     title=node.id,
                     font={"size": 15, "color": "#FFFFFF"}  # White text color for high contrast
                 )
@@ -203,10 +192,9 @@ def create_streamlit_graph_elements(graph_documents, k=100):
     ) for (source, target), label in unique_edges.items()]
 
     return nodes, edges
-def initialize_retrieval_chain(transcript_chunk_documents, summary_chunk_documents):
-    retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
-    llm = ChatOpenAI(temperature=0.2, max_tokens=2048)
-    combine_docs_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
+
+def initialize_base_rag_retrieval_chain(transcript_chunk_documents, summary_chunk_documents):
+    combine_docs_chain = create_chain_to_combine_docs()
     embeddings = OpenAIEmbeddings()
 
     db = Chroma.from_documents(transcript_chunk_documents + summary_chunk_documents, embeddings,persist_directory="./chroma_db_st")
@@ -215,46 +203,106 @@ def initialize_retrieval_chain(transcript_chunk_documents, summary_chunk_documen
     retrieval_chain = create_retrieval_chain(retriever, combine_docs_chain)
     return retrieval_chain
 
-def main():
-    st.set_page_config(page_title="YouTube Video Analyzer", page_icon=":movie_camera:")
+def initialize_graphrag_retrieval_chain(graph_documents):
+    
 
-    st.subheader("Analyze and Chat About Your YouTube Videos")
+    graph = Neo4jGraph()
 
-    summary_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=2000,
-        chunk_overlap=1000,
-        length_function=len,
-        is_separator_regex=False,
+    # Store to neo4j
+    graph.add_graph_documents(
+    graph_documents, 
+    baseEntityLabel=True, 
+    include_source=True
     )
 
+    vector_index = Neo4jVector.from_existing_graph(
+        OpenAIEmbeddings(),
+        search_type="hybrid",
+        node_label="Document",
+        text_node_properties=["text"],
+        embedding_node_property="embedding"
+    )
+    retriever = vector_index.as_retriever()
+    
+    #history_aware_retriever = create_history_aware_retriever(retriever)
+
+    combine_docs_chain = create_chain_to_combine_docs()
+    
+    retrieval_chain = create_retrieval_chain(retriever, combine_docs_chain)
+    return retrieval_chain
+
+def create_chain_to_combine_docs(temperature=.2,max_tokens=2048):
+    llm = ChatOpenAI(temperature=temperature, max_tokens=max_tokens)
+    retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
+    combine_docs_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
+    return combine_docs_chain
+
+def main():# Set the page configuration (title and icon) for the Streamlit app
+    st.set_page_config(page_title="YouTube Video Analyzer", page_icon=":movie_camera:")
+
+    # Display the subheader for the main title of the app
+    # st.subheader("Analyze and Chat About Your YouTube Videos")
+
+    # Initialize a text splitter to break down video transcripts into smaller chunks for processing
+    summary_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=2000,    # Size of each chunk in characters
+        chunk_overlap=1000, # Overlap between chunks to ensure context
+        length_function=len, # Function used to measure the length of the text
+        is_separator_regex=False # Boolean flag for splitting by regex
+    )
+
+    # Load environment variables from a .env file (useful for storing API keys, etc.)
     load_dotenv(override=True)
 
+    # Session state variables to persist data across interactions
+
+    # Holds the retrieval chain for processing user queries about the video
     if "retrieval_chain" not in st.session_state:
-        st.session_state.retrieval_chain = None  # Initialize retrieval_chain to None
+        st.session_state.retrieval_chain = None  # Initialize to None
 
+    # Stores the summary of the video transcript
     if "summary" not in st.session_state:
-        st.session_state.summary = ''
+        st.session_state.summary = ''  # Initialize to an empty string
 
+    # Stores the knowledge graph generated from the video transcript
     if "knowledge_graph" not in st.session_state:
-        st.session_state.knowledge_graph = None
+        st.session_state.knowledge_graph = None  # Initialize to None
 
-
+    # Stores the chat messages between the user and the AI assistant
     if "messages" not in st.session_state:
-        st.session_state.messages = []
+        st.session_state.messages = []  # Initialize to an empty list
 
+    # Stores the chat messages between the user and the AI assistant
+    if "video_title" not in st.session_state:
+        st.session_state.video_title = ''  # Initialize to an empty list
+
+    # Local variable to keep track of chat history during a session
     chat_history = []
 
+    # Sidebar for user inputs and controls
     with st.sidebar:
+        # Header for the video processing section
         st.header("Video Processing")
 
+        # Text input for the user to paste the YouTube video URL
         yt_uri = st.text_input("Paste YouTube URI and click 'Process'", key='yt_uri')
 
+        # Button to start processing the video once the URL is provided
         if st.button("Process"):
             with st.spinner("Processing video..."):
-                if yt_uri:
+                if yt_uri:  # Check if the user has provided a URL
+                    # Retrieve the transcript of the YouTube video
                     transcript, transcript_documents = get_youtube_transcript(yt_uri)
-                    summary, transcript_chunk_documents = get_transcript_summary(transcript, transcript_documents, initial_prompt, refine_prompt)
 
+                    # Generate a summary of the transcript
+                    summary, transcript_chunk_documents = get_transcript_summary(
+                        transcript, 
+                        transcript_documents, 
+                        initial_prompt, 
+                        refine_prompt
+                    )
+
+                    # Metadata dictionary to store additional information about the video
                     metadata = {
                         'video_title': transcript_documents[0].metadata['title'],
                         'doc_type': 'summary',
@@ -262,53 +310,103 @@ def main():
                         'video_author': transcript_documents[0].metadata['author']
                     }
 
-                    summary_chunk_documents = summary_splitter.create_documents(
-                        summary_splitter.split_text(summary), [metadata] * len(summary_splitter.split_text(summary))
-                    )
+                    st.session_state.video_title = transcript_documents[0].metadata['title']
                     
-                    st.session_state.retrieval_chain = initialize_retrieval_chain(transcript_chunk_documents, summary_chunk_documents)
-                    knowledge_graph = create_knowledge_graph(summary_chunk_documents)
-                    st.session_state.knowledge_graph = knowledge_graph
-                    st.session_state.summary = summary  # Save summary to session state
 
-    
+                    # Create summary documents from the split summary text
+                    summary_chunk_documents = summary_splitter.create_documents(
+                        summary_splitter.split_text(summary), 
+                        [metadata] * len(summary_splitter.split_text(summary))
+                    )
+
+                    # Generate a knowledge graph based on the video transcript and summary
+                    knowledge_graph = create_knowledge_graph(summary_chunk_documents + transcript_chunk_documents)
+                    
+                    # Initialize the retrieval chain using the created knowledge graph
+                    st.session_state.retrieval_chain = initialize_graphrag_retrieval_chain(knowledge_graph)
+                    
+                    # Save the knowledge graph and summary to session state for persistence
+                    st.session_state.knowledge_graph = knowledge_graph
+                    st.session_state.summary = summary  # Save the summary to session state
+
         
-    st.write(st.session_state.summary)  # Display the summary
+
+        if st.session_state.knowledge_graph:
+            # Calculate the total number of nodes in the knowledge graph
+            total_nodes = len(set(node.id for doc in st.session_state.knowledge_graph for node in doc.nodes))
+
+            # Slider to select the number of top nodes to display in the knowledge graph
+            k = st.slider(
+                f"Select the number of nodes to display", 
+                min_value=1, 
+                max_value=total_nodes, 
+                value=min(100, total_nodes)
+            )
+
+            # Slider for selecting the minimum node size in the graph visualization
+            min_size = st.slider(
+                "Minimum node size", 
+                min_value=1, 
+                max_value=50, 
+                value=1
+            )
+
+            # Slider for selecting the maximum node size in the graph visualization
+            max_size = st.slider(
+                "Maximum node size", 
+                min_value=10, 
+                max_value=100, 
+                value=50
+            )
+
+    # Subheader for the knowledge graph section
+    st.subheader(st.session_state.video_title)
+
+    # Check if the knowledge graph exists in session state before displaying it
     if st.session_state.knowledge_graph:
-        # Render the graph with a container
-        nodes, edges = create_streamlit_graph_elements(st.session_state.knowledge_graph)
+        # Create the graph elements (nodes and edges) for visualization
+        nodes, edges = create_streamlit_graph_elements(st.session_state.knowledge_graph, k=k)
         
+        # Adjust the font size of the edges in the graph
         for edge in edges:
-            edge.font = {"size": 5}  # Adjust the font size here
-        # Define the configuration for the graph visualization
-        config = Config(
-        width=700,  # Adjust based on your Streamlit container
-        height=500,  # Adjust based on your Streamlit container
-        directed=False,
-        physics=True,  # Enable physics to allow dynamic node spreading
-        collapsible=False,
-        linkLength=2500,  # Increase this to spread nodes apart
-        nodeSpacing=1000,  # Increase to spread out nodes
-        gravity=-1000,  # Decrease to make nodes less attracted to the center
-        repulsion=2000,  # Increase to make nodes repel each other more
-        springLength=250,  # Increase to make connected nodes further apart
-        springStrength=0.0001,  # Decrease to make connections less strong
-        highlightColor="#F7A7A6",
-    )
-        #config = Config(height=600, width=800, directed=True, nodeHighlightBehavior=True)
-        # Render the graph using agraph with the specified configuration
-        agraph(nodes=nodes, edges=edges, config=config)
+            edge.font = {"size": 5}
         
+        # Define the configuration for the graph visualization using agraph
+        config = Config(
+            width=700,          # Set the width of the graph container
+            height=350,         # Set the height of the graph container
+            directed=False,     # Set to False for undirected graphs
+            physics=True,       # Enable physics to allow dynamic node spreading
+            collapsible=False,  # Disable collapsibility of nodes
+            linkLength=2500,    # Increase link length to spread nodes apart
+            nodeSpacing=1000,   # Increase spacing between nodes
+            gravity=-1000,      # Decrease gravity to make nodes less attracted to the center
+            repulsion=2000,     # Increase repulsion to spread nodes further apart
+            springLength=250,   # Increase spring length to make connected nodes further apart
+            springStrength=0.0001,  # Decrease spring strength to make connections less strong
+            highlightColor="#F7A7A6",  # Set the color for highlighted nodes
+        )
+
+        # Render the knowledge graph using agraph with the specified configuration
+        agraph(nodes=nodes, edges=edges, config=config)
+
+    # Display the summary of the video transcript
+    st.write(st.session_state.summary)
+
+    # Display chat messages from the session state
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+    # Input box for the user to ask a question about the video
     if prompt := st.chat_input("Ask a question about your video:"):
         with st.chat_message("user"):
             st.markdown(prompt)
 
+        # Add the user's question to the session state messages
         st.session_state.messages.append({"role": "user", "content": prompt})
 
+        # Process the user's question using the retrieval chain
         if st.session_state.retrieval_chain:
             ai_msg = st.session_state.retrieval_chain.invoke({"input": prompt, "chat_history": chat_history})
             response = ai_msg["answer"]
@@ -316,10 +414,14 @@ def main():
         else:
             response = "The retrieval chain is not initialized. Please process a video first."
 
+        # Display the AI assistant's response
         with st.chat_message("assistant"):
             st.markdown(response)
 
+        # Add the assistant's response to the session state messages
         st.session_state.messages.append({"role": "assistant", "content": response})
 
+   
+# Run the main function when the script is executed
 if __name__ == '__main__':
     main()
