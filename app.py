@@ -236,65 +236,51 @@ def create_chain_to_combine_docs(temperature=.2,max_tokens=2048):
     retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
     combine_docs_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
     return combine_docs_chain
-
-def main():# Set the page configuration (title and icon) for the Streamlit app
+def main():
     st.set_page_config(page_title="YouTube Video Analyzer", page_icon=":movie_camera:")
 
-    # Display the subheader for the main title of the app
-    # st.subheader("Analyze and Chat About Your YouTube Videos")
-
-    # Initialize a text splitter to break down video transcripts into smaller chunks for processing
     summary_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=2000,    # Size of each chunk in characters
-        chunk_overlap=1000, # Overlap between chunks to ensure context
-        length_function=len, # Function used to measure the length of the text
-        is_separator_regex=False # Boolean flag for splitting by regex
+        chunk_size=1000,
+        chunk_overlap=500,
+        length_function=len,
+        is_separator_regex=False
     )
 
-    # Load environment variables from a .env file (useful for storing API keys, etc.)
     load_dotenv(override=True)
 
-    # Session state variables to persist data across interactions
-
-    # Holds the retrieval chain for processing user queries about the video
     if "retrieval_chain" not in st.session_state:
-        st.session_state.retrieval_chain = None  # Initialize to None
+        st.session_state.retrieval_chain = None
 
-    # Stores the summary of the video transcript
     if "summary" not in st.session_state:
-        st.session_state.summary = ''  # Initialize to an empty string
+        st.session_state.summary = ''
 
-    # Stores the knowledge graph generated from the video transcript
     if "knowledge_graph" not in st.session_state:
-        st.session_state.knowledge_graph = None  # Initialize to None
+        st.session_state.knowledge_graph = None
 
-    # Stores the chat messages between the user and the AI assistant
     if "messages" not in st.session_state:
-        st.session_state.messages = []  # Initialize to an empty list
+        st.session_state.messages = []
 
-    # Stores the chat messages between the user and the AI assistant
     if "video_title" not in st.session_state:
-        st.session_state.video_title = ''  # Initialize to an empty list
+        st.session_state.video_title = ''
 
-    # Local variable to keep track of chat history during a session
+    if "show_context" not in st.session_state:
+        st.session_state.show_context = False
+
+    if "context_message" not in st.session_state:
+        st.session_state.context_message = ""
+
     chat_history = []
 
-    # Sidebar for user inputs and controls
     with st.sidebar:
-        # Header for the video processing section
         st.header("Video Processing")
 
-        # Text input for the user to paste the YouTube video URL
         yt_uri = st.text_input("Paste YouTube URI and click 'Process'", key='yt_uri')
 
-        # Button to start processing the video once the URL is provided
         if st.button("Process"):
             with st.spinner("Processing video..."):
-                if yt_uri:  # Check if the user has provided a URL
-                    # Retrieve the transcript of the YouTube video
+                if yt_uri:
                     transcript, transcript_documents = get_youtube_transcript(yt_uri)
 
-                    # Generate a summary of the transcript
                     summary, transcript_chunk_documents = get_transcript_summary(
                         transcript, 
                         transcript_documents, 
@@ -302,7 +288,6 @@ def main():# Set the page configuration (title and icon) for the Streamlit app
                         refine_prompt
                     )
 
-                    # Metadata dictionary to store additional information about the video
                     metadata = {
                         'video_title': transcript_documents[0].metadata['title'],
                         'doc_type': 'summary',
@@ -311,31 +296,22 @@ def main():# Set the page configuration (title and icon) for the Streamlit app
                     }
 
                     st.session_state.video_title = transcript_documents[0].metadata['title']
-                    
 
-                    # Create summary documents from the split summary text
                     summary_chunk_documents = summary_splitter.create_documents(
                         summary_splitter.split_text(summary), 
                         [metadata] * len(summary_splitter.split_text(summary))
                     )
 
-                    # Generate a knowledge graph based on the video transcript and summary
                     knowledge_graph = create_knowledge_graph(summary_chunk_documents + transcript_chunk_documents)
                     
-                    # Initialize the retrieval chain using the created knowledge graph
                     st.session_state.retrieval_chain = initialize_graphrag_retrieval_chain(knowledge_graph)
                     
-                    # Save the knowledge graph and summary to session state for persistence
                     st.session_state.knowledge_graph = knowledge_graph
-                    st.session_state.summary = summary  # Save the summary to session state
-
-        
+                    st.session_state.summary = summary
 
         if st.session_state.knowledge_graph:
-            # Calculate the total number of nodes in the knowledge graph
             total_nodes = len(set(node.id for doc in st.session_state.knowledge_graph for node in doc.nodes))
 
-            # Slider to select the number of top nodes to display in the knowledge graph
             k = st.slider(
                 f"Select the number of nodes to display", 
                 min_value=1, 
@@ -343,7 +319,6 @@ def main():# Set the page configuration (title and icon) for the Streamlit app
                 value=min(100, total_nodes)
             )
 
-            # Slider for selecting the minimum node size in the graph visualization
             min_size = st.slider(
                 "Minimum node size", 
                 min_value=1, 
@@ -351,7 +326,6 @@ def main():# Set the page configuration (title and icon) for the Streamlit app
                 value=1
             )
 
-            # Slider for selecting the maximum node size in the graph visualization
             max_size = st.slider(
                 "Maximum node size", 
                 min_value=10, 
@@ -359,69 +333,75 @@ def main():# Set the page configuration (title and icon) for the Streamlit app
                 value=50
             )
 
-    # Subheader for the knowledge graph section
+        # Show/Hide Sources Button
+        if st.button("Show Sources"):
+            st.session_state.show_context = True
+            # Trigger displaying sources immediately
+            if st.session_state.retrieval_chain and st.session_state.context_message:
+    
+                st.session_state.messages.append({"role": "assistant", "content": st.session_state.context_message})
+
+        if st.button("Hide Sources"):
+            st.session_state.show_context = False
+
     st.subheader(st.session_state.video_title)
 
-    # Check if the knowledge graph exists in session state before displaying it
     if st.session_state.knowledge_graph:
-        # Create the graph elements (nodes and edges) for visualization
         nodes, edges = create_streamlit_graph_elements(st.session_state.knowledge_graph, k=k)
-        
-        # Adjust the font size of the edges in the graph
+
         for edge in edges:
             edge.font = {"size": 5}
-        
-        # Define the configuration for the graph visualization using agraph
+
         config = Config(
-            width=700,          # Set the width of the graph container
-            height=350,         # Set the height of the graph container
-            directed=False,     # Set to False for undirected graphs
-            physics=True,       # Enable physics to allow dynamic node spreading
-            collapsible=False,  # Disable collapsibility of nodes
-            linkLength=2500,    # Increase link length to spread nodes apart
-            nodeSpacing=1000,   # Increase spacing between nodes
-            gravity=-1000,      # Decrease gravity to make nodes less attracted to the center
-            repulsion=2000,     # Increase repulsion to spread nodes further apart
-            springLength=250,   # Increase spring length to make connected nodes further apart
-            springStrength=0.0001,  # Decrease spring strength to make connections less strong
-            highlightColor="#F7A7A6",  # Set the color for highlighted nodes
+            width=700,
+            height=350,
+            directed=False,
+            physics=True,
+            collapsible=False,
+            linkLength=2500,
+            nodeSpacing=1000,
+            gravity=-1000,
+            repulsion=2000,
+            springLength=250,
+            springStrength=0.0001,
+            highlightColor="#F7A7A6",
         )
 
-        # Render the knowledge graph using agraph with the specified configuration
         agraph(nodes=nodes, edges=edges, config=config)
 
-    # Display the summary of the video transcript
     st.write(st.session_state.summary)
 
-    # Display chat messages from the session state
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Input box for the user to ask a question about the video
     if prompt := st.chat_input("Ask a question about your video:"):
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Add the user's question to the session state messages
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-        # Process the user's question using the retrieval chain
         if st.session_state.retrieval_chain:
             ai_msg = st.session_state.retrieval_chain.invoke({"input": prompt, "chat_history": chat_history})
             response = ai_msg["answer"]
-            chat_history.extend([HumanMessage(content=prompt), response])
+            context_documents = ai_msg.get("context", [])
+
+            # Extract page_content for sources
+            context_content = "\n\n".join([f"Source {idx}: \n\n  {doc.page_content[6:]}" for idx,doc in enumerate(context_documents[:2])])
+            st.session_state.context_message = context_content
+            with st.chat_message("assistant"):
+                st.markdown(response)
+
+            st.session_state.messages.append({"role": "assistant", "content": response})
+
+            # Display sources if the button was pressed
+            if st.session_state.show_context and st.session_state.context_message:
+                st.chat_message("assistant").markdown(st.session_state.context_message)
         else:
-            response = "The retrieval chain is not initialized. Please process a video first."
+            full_response = "The retrieval chain is not initialized. Please process a video first."
 
-        # Display the AI assistant's response
-        with st.chat_message("assistant"):
-            st.markdown(response)
+            st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-        # Add the assistant's response to the session state messages
-        st.session_state.messages.append({"role": "assistant", "content": response})
 
-   
-# Run the main function when the script is executed
 if __name__ == '__main__':
     main()
