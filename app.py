@@ -42,7 +42,7 @@ def format_youtube_transcript(transcript_documents, output_folder='transcripts')
     chunks = transcript_documents
     title = chunks[0].metadata['title']
     output_file = os.path.join(output_folder,'a')
-    with open(output_file, 'w') as file:
+    with open(output_file, 'w',encoding='utf-8', errors='ignore') as file:
         # Iterate over each chunk in the list with an index to access the next chunk
         for i in range(len(chunks)):
             # Extract metadata and content from the current chunk
@@ -80,6 +80,7 @@ def get_youtube_transcript(yt_uri, chunk_size_seconds=60):
         chunk_size_seconds=chunk_size_seconds,
         transcript_format=TranscriptFormat.CHUNKS,
         add_video_info=True,
+        language='es'
     )
     
     transcript_documents = loader.load()
